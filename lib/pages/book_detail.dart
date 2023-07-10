@@ -70,18 +70,23 @@ class _BookDetailState extends State<BookDetail>
 
 //  Book reservation
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+
                     children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 16),
-                          child: Image.asset(
+                      Flexible(
+                          child: 
+                          Image.asset(
+                            alignment: Alignment.topLeft,
                             'assets/pictures/wajiz.jpg',
-                            width: MediaQuery.of(context).size.width / 2,
-                            height: MediaQuery.of(context).size.height / 5,
-                          )),
-                      Expanded(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 5,
+                            width: MediaQuery.of(context).size.width / 1.6,
+                            height: MediaQuery.of(context).size.height / 4,
+                          ),
+                          ),
+
+                      Flexible(
+                        child: 
+                        Container(
+                          width: MediaQuery.of(context).size.width / 1.3,
+                          height: MediaQuery.of(context).size.height / 4,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
