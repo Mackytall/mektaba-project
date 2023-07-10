@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:test/book_consultation.dart';
+import 'package:test/pages/book_consultation.dart';
+import 'package:test/pages/splash_screen.dart';
 import 'package:test/widget/app_bar_builder.dart';
-import '../data/mektaba_data.dart';
+import '../../data/mektaba_data.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,6 +15,7 @@ class MektabaMainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -21,15 +23,15 @@ class MektabaMainScreen extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: 
+      const Splash(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key,});
 
-  final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -102,9 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Image.asset(mektabas[0].logo,
                           height: 100, width: 100, fit: BoxFit.fitHeight)),
                   Expanded(
-                    child: Container(
-                      //color: Colors.blue,
-                      //height: 200,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -136,11 +135,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ],
                       ),
-                    ),
+
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
 //  Button
@@ -200,14 +199,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Tapez un ouvrage, un auteur, ect...',
-                    // Add a clear button to the search bar
+                    // clear button 
                     suffixIcon: IconButton(
                       icon: Icon(
                         Icons.cancel,
                       ),
                       onPressed: () => _searchController.clear(),
                     ),
-                    // Add a search icon or button to the search bar
+                    // search icon or button 
                     prefixIcon: IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
@@ -220,9 +219,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              Container(
+              const SizedBox(
                 height: 10,
-                //color: Colors.yellow,
               ),
 // Cards
               Row(
@@ -323,7 +321,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ))),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
 // Event
@@ -334,7 +332,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Évenements',
                     textAlign: TextAlign.start,
                   ),
-                  Divider(),
+                  const Divider(),
                   Stack(
                     children: [
                       Container(
@@ -371,10 +369,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
                 ],
               ),
-              Container(
-                height: 10,
-                //color: Colors.yellow,
-              ),
+              const SizedBox(
+                height: 10,              
+                ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -382,12 +379,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     'Les Nouveautes',
                     textAlign: TextAlign.start,
                   ),
-                  Divider(),
+                  const Divider(),
                   Row(
                     children: [
                       Column(
                         children: [
-                          // Livres
+                          // Books
                           Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade300,
@@ -400,25 +397,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                       'assets/pictures/wajiz.jpg'))),
                           SizedBox(
                               width: 80,
+                              // height: 100,
                               child: AutoSizeText(
                                 'Le prophete racontes aux salam',
                                 style: TextStyle(color: Colors.black),
                                 maxLines: 2,
                               )),
-
-                          // Container(**********
-                          //     width: 80,
-                          //     child: AutoSizeText(
-                          //       'Le prophete racontes aux salam',
-                          //     )),
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Column(
                         children: [
-                          // Livres
+                          // Books
                           Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade300,
@@ -437,19 +429,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                 maxLines: 2,
                               )),
 
-                          // Container(
-                          //     width: 80,
-                          //     child: AutoSizeText(
-                          //       'Le prophete racontes aux salam',
-                          //     )),
+                   
                         ],
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Column(
                         children: [
-                          // Livres
+                          // Books
                           Container(
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade300,
@@ -467,19 +455,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 style: TextStyle(color: Colors.black),
                                 maxLines: 2,
                               )),
-
-                          // Container(
-                          //     width: 80,
-                          //     child: AutoSizeText(
-                          //       'Le prophete racontes aux salam',
-                          //     )),
                         ],
                       ),
                     ],
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
             ],

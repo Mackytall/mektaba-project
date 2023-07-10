@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test/book_detail.dart';
+import 'package:test/pages/book_detail.dart';
 import 'package:test/widget/app_bar_builder.dart';
-import '../data/mektaba_data.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 class BookConsultation extends StatefulWidget {
   const BookConsultation({super.key});
@@ -26,10 +24,10 @@ class _BookConsultationState extends State<BookConsultation> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                Row(
+                const SizedBox(height: 20),
+                const Row(
                   children: [
-                    Text(
+                     Text(
                       'Consultation',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -38,27 +36,24 @@ class _BookConsultationState extends State<BookConsultation> {
                     ),
                   ],
                 ),
-                Text("Liste des ouvrages accessible dans la mektaba"),
-                SizedBox(
+               const Text("Liste des ouvrages accessible dans la mektaba"),
+                const SizedBox(
                   height: 10,
                 ),
 // Search Bar
                 Container(
-                  // Add padding around the search bar
-                  //padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  // Use a Material design search bar
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: 'Tapez un ouvrage, un auteur, ect...',
-                      // Add a clear button to the search bar
+                      // clear button 
                       suffixIcon: IconButton(
                         icon: Icon(
                           Icons.cancel,
                         ),
                         onPressed: () => _searchController.clear(),
                       ),
-                      // Add a search icon or button to the search bar
+                      // search icon or button 
                       prefixIcon: IconButton(
                         icon: Icon(Icons.search),
                         onPressed: () {
@@ -71,7 +66,7 @@ class _BookConsultationState extends State<BookConsultation> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
 // Filters
@@ -79,10 +74,10 @@ class _BookConsultationState extends State<BookConsultation> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("FILTRES".toUpperCase()),
-                    Icon(Icons.filter_list)
+                    const Icon(Icons.filter_list)
                   ],
                 ),
-                Divider(),
+                const Divider(),
 // Book list
                 GestureDetector(
                     onTap: () {
@@ -104,9 +99,9 @@ class _BookConsultationState extends State<BookConsultation> {
                               child: Row(children: [
                                 Container(
                                     padding: EdgeInsets.only(right: 16),
-                                    width:
-                                        MediaQuery.of(context).size.width / 5,
-                                    height: 120,
+                                    // width:
+                                    //     MediaQuery.of(context).size.width / 5,
+                                    // height: 120,
                                     child: FittedBox(
                                         fit: BoxFit.fitWidth,
                                         child: Image.asset(
@@ -119,7 +114,7 @@ class _BookConsultationState extends State<BookConsultation> {
                                   children: [
                                     Text("Les Prophètes racontés aux enfants"),
                                     Text(
-                                      "Editions Tawhids",
+                                      "Editions Tawhid",
                                       style: TextStyle(
                                         color: Color(0xFF4B9A6F),
                                         fontSize: 12,
@@ -140,7 +135,7 @@ class _BookConsultationState extends State<BookConsultation> {
                                                 color: Color(0xFFD88513),
                                               ),
                                             ),
-                                            Icon(Icons.favorite)
+                                            const Icon(Icons.favorite)
                                           ],
                                         ))
                                   ],
@@ -150,11 +145,6 @@ class _BookConsultationState extends State<BookConsultation> {
               ],
             )),
       )),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ),
     );
   }
 }
