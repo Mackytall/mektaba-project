@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         MediaQuery.of(context).size.width / 12,
                                   ),
                                   Text(
-                                    'Consulter ouvrages ',
+                                    'Consulter \nouvrages ',
                                     style: TextStyle(
                                       fontSize: 12,
                                     ),
@@ -291,7 +291,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 size: MediaQuery.of(context).size.width / 12,
                               ),
                               Text(
-                                'Foire Aux Questions',
+                                'Foire Aux \nQuestions',
                                 style: TextStyle(
                                   fontSize: 12,
                                 ),
@@ -312,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 size: MediaQuery.of(context).size.width / 12,
                               ),
                               Text(
-                                'Contact / Infomations',
+                                'Contact /\nInfomations',
                                 style: TextStyle(
                                   fontSize: 12,
                                 ),
