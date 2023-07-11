@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test/pages/book_consultation.dart';
+import 'package:test/pages/login.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../data/mektaba_data.dart';
@@ -23,8 +24,8 @@ class MektabaMainScreen extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: 
-      const Splash(),
+      home: Login()
+      // const Splash(),
     );
   }
 }

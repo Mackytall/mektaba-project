@@ -69,6 +69,7 @@ flutter:
     - assets/pictures/logo_tawhid.png
     - assets/pictures/event.jpg
     - assets/pictures/wajiz.jpg
+    - assets/pictures/login_image.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
