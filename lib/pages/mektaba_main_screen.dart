@@ -24,8 +24,8 @@ class MektabaMainScreen extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: Login()
-      // const Splash(),
+      home: 
+      const Splash(),
     );
   }
 }
@@ -175,7 +175,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Login()),
+                        );
+                    },
                     child: Row(
                       children: [
                         Icon(Icons.person_add),
