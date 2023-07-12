@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test/pages/books/book_consultation.dart';
 import 'package:test/pages/login.dart';
+import 'package:test/pages/mektabas/mektaba_detail.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
@@ -102,8 +103,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Padding(
                       padding: EdgeInsets.only(right: 16),
-                      child: Image.asset(mektabas[0].logo,
-                          height: 100, width: 100, fit: BoxFit.fitHeight)),
+                      child: GestureDetector(
+                        onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>  MektabaDetail()),
+                        );
+                      },
+                      child: 
+                      Image.asset(mektabas[0].logo,
+                          height: 100, width: 100, fit: BoxFit.fitHeight))),
                   Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
