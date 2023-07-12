@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test/pages/book_detail.dart';
+import 'package:test/pages/books/book_detail.dart';
 import 'package:test/widget/app_bar_builder.dart';
 
 class BookConsultation extends StatefulWidget {
