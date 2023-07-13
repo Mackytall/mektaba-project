@@ -3,12 +3,11 @@ import 'package:test/pages/books/book_consultation.dart';
 import 'package:test/pages/login.dart';
 import 'package:test/pages/mektabas/mektaba_detail.dart';
 import 'package:test/pages/splash_screen.dart';
+import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:map_launcher/map_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:geocoding/geocoding.dart';
+
 
 class MektabaMainScreen extends StatelessWidget {
   const MektabaMainScreen({super.key});
@@ -41,50 +40,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
-
-  Future<Coords> getGeoCoderData(address) async {
-    List<Location> locations = await locationFromAddress(address);
-    return Coords(locations.first.latitude, locations.first.longitude);
-  }
-
-  openMapsSheet(context, address, name) async {
-    try {
-      final coords = await getGeoCoderData(address);
-      final title = name;
-      final availableMaps = await MapLauncher.installedMaps;
-
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Wrap(
-                  children: <Widget>[
-                    for (var map in availableMaps)
-                      ListTile(
-                        onTap: () => map.showMarker(
-                          coords: coords,
-                          title: title,
-                        ),
-                        title: Text(map.mapName),
-                        leading: SvgPicture.asset(
-                          map.icon,
-                          height: 30.0,
-                          width: 30.0,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      print("Erreur lors de l'ouverture de l'application de cartes : $e");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +85,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             textAlign: TextAlign.left,
                           ),
                           InkWell(
-                            onTap: () => openMapsSheet(context,
+                            onTap: () => 
+                            openMapsSheet(context,
                                 mektabas[0].fullAddress, mektabas[0].name),
                             child: Row(
                               children: [

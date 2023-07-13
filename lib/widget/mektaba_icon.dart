@@ -3,15 +3,20 @@ import 'package:flutter/material.dart';
 class MektabaIcon extends StatelessWidget {
   final IconData icon;
   final String description;
+  final void Function()? onTap;
 
   MektabaIcon({
     required this.icon,
     required this.description,
-  });
+    this.onTap  
+    });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return GestureDetector(
+      onTap: onTap,
+      child: 
+    Column(
       children: [
         Container(
           padding: EdgeInsets.all(8),
@@ -28,6 +33,6 @@ class MektabaIcon extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         )
       ],
-    );
+    ));
   }
 }
