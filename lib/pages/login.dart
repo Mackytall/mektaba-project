@@ -34,19 +34,19 @@ class _LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBarBuilder(),
       body:
-          // SingleChildScrollView(child:
+          SingleChildScrollView(child:
           Center(
               child: Container(
-        padding: EdgeInsets.only(bottom: 8),
-        // height: MediaQuery.of(context).size.height/1.1,
+        // padding: EdgeInsets.only(bottom: 8),
+        height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height / 25,
+              height: MediaQuery.of(context).size.height / 30,
             ),
             Image.asset('assets/pictures/login_image.jpg'),
             SizedBox(
-              height: MediaQuery.of(context).size.height / 25,
+              height: MediaQuery.of(context).size.height / 30,
             ),
             Form(
                 key: _formKey,
@@ -62,7 +62,7 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width / 1.2,
                       child: SetTextField(
-                        controller: userName,
+                        controller: password,
                         hintText: "Mot de passe",
                       ),
                     ),
@@ -85,7 +85,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 30,
+                      height: MediaQuery.of(context).size.height / 40,
                     ),
                     ElevatedButton(
                       onPressed: () {},
@@ -130,7 +130,7 @@ class _LoginState extends State<Login> {
           ],
         ),
       )),
-      // )
+      )
     );
   }
 }
