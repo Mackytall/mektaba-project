@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:test/pages/Register.dart';
 import 'package:test/pages/books/book_consultation.dart';
 import 'package:test/pages/login.dart';
 import 'package:test/pages/mektaba_owner/add_book.dart';
+import 'package:test/pages/mektabas/event_detail.dart';
 import 'package:test/pages/mektabas/mektaba_detail.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/utils/utils.dart';
@@ -25,8 +27,9 @@ class MektabaMainScreen extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: AddBook()
+      home: 
       // const Splash(),
+      Register()
     );
   }
 }
@@ -307,6 +310,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.start,
                   ),
                   const Divider(),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EventDetail()),
+                        );
+                    },
+                        child:
+                
                   Stack(
                     children: [
                       Container(
@@ -340,7 +353,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ],
                           ))
                     ],
-                  )
+                  )  )
                 ],
               ),
               const SizedBox(
