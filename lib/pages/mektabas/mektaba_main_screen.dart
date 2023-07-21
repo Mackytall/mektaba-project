@@ -5,6 +5,7 @@ import 'package:test/pages/login.dart';
 import 'package:test/pages/mektaba_owner/add_book.dart';
 import 'package:test/pages/mektabas/event_detail.dart';
 import 'package:test/pages/mektabas/mektaba_detail.dart';
+import 'package:test/pages/profile.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
@@ -28,8 +29,8 @@ class MektabaMainScreen extends StatelessWidget {
         useMaterial3: true,
       ),
       home: 
-      // const Splash(),
-      Register()
+      const Splash(),
+      // Profile(),
     );
   }
 }

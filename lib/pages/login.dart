@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:test/pages/Register.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import 'package:test/widget/textField.dart';
 
@@ -121,7 +122,12 @@ class _LoginState extends State<Login> {
                     children: [
                       Text("Pas encore membre ?"),
                       TextButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Register())
+                          )
+                        },
                         child: Text('Créer un compte'),
                       ),
                     ],
