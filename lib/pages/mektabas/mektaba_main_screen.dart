@@ -5,6 +5,9 @@ import 'package:test/pages/login.dart';
 import 'package:test/pages/mektaba_owner/add_book.dart';
 import 'package:test/pages/mektabas/event_detail.dart';
 import 'package:test/pages/mektabas/mektaba_detail.dart';
+import 'package:test/pages/mektabas/select_mektaba.dart';
+import 'package:test/pages/member_management.dart';
+import 'package:test/pages/member_validation.dart';
 import 'package:test/pages/profile.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/utils/utils.dart';
@@ -29,9 +32,9 @@ class MektabaMainScreen extends StatelessWidget {
         useMaterial3: true,
       ),
       home: 
-      const Splash(),
-      // Profile(),
-    );
+      // const Splash(),
+      MemberValidation()
+  );
   }
 }
 
@@ -307,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Évenements',
+                    'Évènements',
                     textAlign: TextAlign.start,
                   ),
                   const Divider(),

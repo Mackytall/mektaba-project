@@ -267,6 +267,148 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(fontSize: 16),
               ),
               const Divider(),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child:
+              
+              Row(
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                            children: [
+                              Text("3",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text("Nouvelles adhésions",
+                              textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ))
+                            ],
+                          ),),
+                      )),
+                  Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                            children: [
+                              Text("15000",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text("Ouvrages disponibles",
+                              textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ))
+                            ],
+                          ),),
+                      )),
+                  Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                            children: [
+                              Text("150",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text("Prêt en cours",
+                              textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ))
+                            ],
+                          ),),
+                      )),
+                       Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                            children: [
+                              Text("12",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text("Réservations",
+                              textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ))
+                            ],
+                          ),),
+                      )),
+                       Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                            children: [
+                              Text("18",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text("Retards",
+                              textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ))
+                            ],
+                          ),),
+                      )),
+                ],
+              )
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Mes apps admin",
+                style: TextStyle(fontSize: 16),
+              ),
+              const Divider(),
               Row(
                 children: [
                   Container(
@@ -336,7 +478,85 @@ class _ProfileState extends State<Profile> {
                             )),
                       )),
                 ],
-              )
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Mes apps admin",
+                style: TextStyle(fontSize: 16),
+              ),
+              const Divider(),
+              Row(
+                children: [
+                  Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.library_books,
+                                  size: 26,
+                                ),
+                                Text(
+                                  "Gestions des \nouvrages",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 10),
+                                )
+                              ],
+                            )),
+                      )),
+                  Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.group,
+                                  size: 26,
+                                ),
+                                Text(
+                                  "Gestion des \nadhérents",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 10),
+                                )
+                              ],
+                            )),
+                      )),
+                  Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Card(
+                        child: Container(
+                            padding: EdgeInsets.all(2),
+                            height: _screenSize.height / 10,
+                            width: _screenSize.width / 5,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                               Icon(
+                                  Icons.event_available,
+                                  size: 26,
+                                ),
+                                Text(
+                                  "Gestion des \névènement",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 10),
+                                )
+                              ],
+                            )),
+                      )),
+                ],
+              ),
             ],
           ),
         )),
