@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:test/constantes.dart';
 import 'package:test/pages/authentification/Register.dart';
@@ -35,8 +34,7 @@ class MektabaMainScreen extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: 
-      const Splash(),
+      home: const Splash(),
       // const TestApi()
     );
   }
@@ -59,7 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     futureBooks = ApiService().fetchBooks();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -73,16 +70,17 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               const SizedBox(height: 20),
               FutureBuilder(
-                future: futureBooks, 
-                builder: (context, snapshot) {
-                  if(snapshot.hasData) {
-                    return Text(snapshot.data![0].title);
-                  } else if (snapshot.hasError) {
-      return Text('${snapshot.error}');
-    }
-    return const CircularProgressIndicator();
-                }
-                ),
+                  future: futureBooks,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final data = snapshot.data;
+                      if (data!.length > 0) return Text(data[0].title);
+                      return Text("No mektaba");
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    }
+                    return const CircularProgressIndicator();
+                  }),
 // Mektaba main screen's Header
               Row(
                 children: [
@@ -93,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>  MektabaDetail()),
+                                  builder: (context) => MektabaDetail()),
                             );
                           },
                           child: Image.asset(mektabas[0].logo,

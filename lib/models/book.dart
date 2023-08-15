@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 
-
-
 part 'book.g.dart';
 
 enum BookStatus {
@@ -23,8 +21,6 @@ extension BookStatusExtension on BookStatus {
     }
   }
 
- 
-
   static BookStatus fromValue(String value) {
     switch (value) {
       case 'draft':
@@ -39,57 +35,53 @@ extension BookStatusExtension on BookStatus {
   }
 }
 
-
 @JsonSerializable(explicitToJson: true)
 class Book {
-   String id;
-    String title;
-    String author;
-    String description;
-    int year;
-    String language;
-    int numberOfPages;
-    String edition;
-    String state;
-    String coverPhoto;
-    String status;
-    String isbn;
-    String ean13;
-    String createdBy;
-    List<dynamic>? acceptedRoles;
-    DateTime createdAt;
-    DateTime updatedAt;
-    int v;
+  @JsonKey(name: '_id')
+  String id;
+  String title;
+  String author;
+  String description;
+  int year;
+  List<String> language;
+  int numberOfPages;
+  String edition;
+  String coverPhoto;
+  BookStatus status;
+  String isbn;
+  String ean13;
+  String createdBy;
+  String? updatedBy;
+  String? deletedBy;
+  DateTime createdAt;
+  DateTime updatedAt;
+  DateTime? deletedAt;
 
   Book({
     required this.id,
-        required this.title,
-        required this.author,
-        required this.description,
-        required this.year,
-        required this.language,
-        required this.numberOfPages,
-        required this.edition,
-        required this.state,
-        required this.coverPhoto,
-        required this.status,
-        required this.isbn,
-        required this.ean13,
-        required this.createdBy,
-       this.acceptedRoles,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.v,
+    required this.title,
+    required this.author,
+    required this.description,
+    required this.year,
+    required this.language,
+    required this.numberOfPages,
+    required this.edition,
+    required this.coverPhoto,
+    required this.status,
+    required this.isbn,
+    required this.ean13,
+    required this.createdBy,
+    required this.createdAt,
+    required this.updatedAt,
+    this.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
   });
 
-    /// Connect the generated [_$BookFromJson] function to the `fromJson`
+  /// Connect the generated [_$BookFromJson] function to the `fromJson`
   /// factory.
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
   /// Connect the generated [_$BookToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$BookToJson(this);
 }
-
- 
-
- 
