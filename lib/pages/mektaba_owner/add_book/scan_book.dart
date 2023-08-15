@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:test/pages/mektaba_owner/add_book.dart';
-import 'package:test/pages/mektaba_owner/isbn_dialog.dart';
+import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
+import 'package:test/pages/mektaba_owner/add_book/isbn_dialog.dart';
 
 class ScanBook extends StatefulWidget {
   MobileScannerController cameraController;

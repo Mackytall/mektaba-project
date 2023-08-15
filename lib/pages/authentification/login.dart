@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:test/pages/Register.dart';
+import 'package:test/pages/authentification/Register.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import 'package:test/widget/textField.dart';
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-
 class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
   final bool goBackIcon;
   final BuildContext? context;
@@ -12,8 +11,7 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
   final void Function()? onPressed;
 
   AppBarBuilder(
-      {
-      this.goBackIcon = false,
+      {this.goBackIcon = false,
       this.context,
       this.actionIcon = false,
       this.icon,
@@ -26,6 +24,7 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      surfaceTintColor: Colors.transparent,
       title: const Text(
         "mektaba",
         style: TextStyle(
@@ -50,19 +49,18 @@ class AppBarBuilder extends StatelessWidget implements PreferredSizeWidget {
               },
             )
           : null,
-       actions:  [ actionIcon ?
-          IconButton(
-            icon:  FaIcon(
-              icon,
-              color: Colors.black,
-            ),
-            tooltip: tooltip,
-            onPressed: onPressed,
-
-            
-          )
-          : Text("")
-        ],
+      actions: [
+        actionIcon
+            ? IconButton(
+                icon: FaIcon(
+                  icon,
+                  color: Colors.black,
+                ),
+                tooltip: tooltip,
+                onPressed: onPressed,
+              )
+            : Text("")
+      ],
     );
   }
 }

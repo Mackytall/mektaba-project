@@ -1,20 +1,24 @@
+
 import 'package:flutter/material.dart';
-import 'package:test/pages/Register.dart';
+import 'package:test/constantes.dart';
+import 'package:test/pages/authentification/Register.dart';
 import 'package:test/pages/books/book_consultation.dart';
-import 'package:test/pages/login.dart';
-import 'package:test/pages/mektaba_owner/add_book.dart';
-import 'package:test/pages/mektabas/event_detail.dart';
-import 'package:test/pages/mektabas/mektaba_detail.dart';
-import 'package:test/pages/mektabas/select_mektaba.dart';
-import 'package:test/pages/member_management.dart';
-import 'package:test/pages/member_validation.dart';
+import 'package:test/pages/authentification/login.dart';
+import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
+import 'package:test/pages/mektaba/event_detail.dart';
+import 'package:test/pages/mektaba/mektaba_detail.dart';
+import 'package:test/pages/mektaba/select_mektaba.dart';
+import 'package:test/pages/mektaba_owner/member/member_management.dart';
+import 'package:test/pages/mektaba_owner/member/member_validation.dart';
 import 'package:test/pages/profile.dart';
+import 'package:test/pages/services/ApiService.dart';
 import 'package:test/pages/splash_screen.dart';
+import 'package:test/pages/testApi.dart';
 import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
+import '../../models/book.dart';
 
 class MektabaMainScreen extends StatelessWidget {
   const MektabaMainScreen({super.key});
@@ -27,20 +31,21 @@ class MektabaMainScreen extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(0xFF4B9A6F),
+          seedColor: kPrimaryColor,
         ),
         useMaterial3: true,
       ),
       home: 
-      // const Splash(),
-      MemberValidation()
-  );
+      const Splash(),
+      // const TestApi()
+    );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key,});
-
+  const MyHomePage({
+    super.key,
+  });
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -48,6 +53,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
+  late Future<List<Book>> futureBooks;
+  @override
+  void initState() {
+    super.initState();
+    futureBooks = ApiService().fetchBooks();
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -60,57 +72,64 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),
-
+              FutureBuilder(
+                future: futureBooks, 
+                builder: (context, snapshot) {
+                  if(snapshot.hasData) {
+                    return Text(snapshot.data![0].title);
+                  } else if (snapshot.hasError) {
+      return Text('${snapshot.error}');
+    }
+    return const CircularProgressIndicator();
+                }
+                ),
 // Mektaba main screen's Header
               Row(
                 children: [
                   Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
-                        onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  MektabaDetail()),
-                        );
-                      },
-                      child: 
-                      Image.asset(mektabas[0].logo,
-                          height: 100, width: 100, fit: BoxFit.fitHeight))),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  MektabaDetail()),
+                            );
+                          },
+                          child: Image.asset(mektabas[0].logo,
+                              height: 100, width: 100, fit: BoxFit.fitHeight))),
                   Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Bienvenue dans la mektaba',
-                              style: TextStyle(
-                                  fontFamily: 'Berlin', fontSize: 20)),
-                          Text(
-                            mektabas[0].name,
-                            style: TextStyle(
-                              fontFamily: 'Berlin',
-                              fontSize: 30,
-                            ),
-                            textAlign: TextAlign.left,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Bienvenue dans la mektaba',
+                            style:
+                                TextStyle(fontFamily: 'Berlin', fontSize: 20)),
+                        Text(
+                          mektabas[0].name,
+                          style: TextStyle(
+                            fontFamily: 'Berlin',
+                            fontSize: 30,
                           ),
-                          InkWell(
-                            onTap: () => 
-                            openMapsSheet(context,
-                                mektabas[0].fullAddress, mektabas[0].name),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Color(0xFF4B9A6F),
-                                ),
-                                Text(mektabas[0].fullAddress,
-                                    style: TextStyle(fontSize: 15),
-                                    textAlign: TextAlign.left),
-                              ],
-                            ),
+                          textAlign: TextAlign.left,
+                        ),
+                        InkWell(
+                          onTap: () => openMapsSheet(context,
+                              mektabas[0].fullAddress, mektabas[0].name),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Color(0xFF4B9A6F),
+                              ),
+                              Text(mektabas[0].fullAddress,
+                                  style: TextStyle(fontSize: 15),
+                                  textAlign: TextAlign.left),
+                            ],
                           ),
-                        ],
-                      ),
-
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -127,7 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white),
-                    onPressed: () {},
+                    onPressed: () {
+                      ApiService().fetchBooks();
+                    },
                     child: Row(
                       children: [
                         Icon(Icons.favorite),
@@ -151,10 +172,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         surfaceTintColor: Colors.white),
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Login()),
-                        );
+                        context,
+                        MaterialPageRoute(builder: (context) => const Login()),
+                      );
                     },
                     child: Row(
                       children: [
@@ -180,14 +200,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Tapez un ouvrage, un auteur, ect...',
-                    // clear button 
+                    // clear button
                     suffixIcon: IconButton(
                       icon: Icon(
                         Icons.cancel,
                       ),
                       onPressed: () => _searchController.clear(),
                     ),
-                    // search icon or button 
+                    // search icon or button
                     prefixIcon: IconButton(
                       icon: Icon(Icons.search),
                       onPressed: () {
@@ -237,69 +257,94 @@ class _MyHomePageState extends State<MyHomePage> {
                                   )
                                 ]),
                               )))),
-                  Card(
-                      surfaceTintColor: Colors.white,
-                      elevation: 3,
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 5,
-                            child: Column(children: [
-                              Icon(
-                                Icons.favorite,
-                                size: MediaQuery.of(context).size.width / 12,
-                              ),
-                              Text(
-                                'Mes favoris\n',
-                                style: TextStyle(
-                                  fontSize: 12,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Profile()),
+                      );
+                    },
+                    child: Card(
+                        surfaceTintColor: Colors.white,
+                        elevation: 3,
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 5,
+                              child: Column(children: [
+                                Icon(
+                                  Icons.favorite,
+                                  size: MediaQuery.of(context).size.width / 12,
                                 ),
-                                textAlign: TextAlign.center,
-                              )
-                            ]),
-                          ))),
-                  Card(
-                      surfaceTintColor: Colors.white,
-                      elevation: 3,
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 5,
-                            child: Column(children: [
-                              Icon(
-                                Icons.help,
-                                size: MediaQuery.of(context).size.width / 12,
-                              ),
-                              Text(
-                                'Foire Aux \nQuestions',
-                                style: TextStyle(
-                                  fontSize: 12,
+                                Text(
+                                  'Mes favoris\n',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ]),
+                            ))),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MemberValidation()),
+                      );
+                    },
+                    child: Card(
+                        surfaceTintColor: Colors.white,
+                        elevation: 3,
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 5,
+                              child: Column(children: [
+                                Icon(
+                                  Icons.help,
+                                  size: MediaQuery.of(context).size.width / 12,
                                 ),
-                                textAlign: TextAlign.center,
-                              )
-                            ]),
-                          ))),
-                  Card(
-                      surfaceTintColor: Colors.white,
-                      elevation: 3,
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 5,
-                            child: Column(children: [
-                              Icon(
-                                Icons.sms,
-                                size: MediaQuery.of(context).size.width / 12,
-                              ),
-                              Text(
-                                'Contact /\nInfomations',
-                                style: TextStyle(
-                                  fontSize: 12,
+                                Text(
+                                  'Foire Aux \nQuestions',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ]),
+                            ))),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddBook()),
+                      );
+                    },
+                    child: Card(
+                        surfaceTintColor: Colors.white,
+                        elevation: 3,
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 4),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width / 5,
+                              child: Column(children: [
+                                Icon(
+                                  Icons.sms,
+                                  size: MediaQuery.of(context).size.width / 12,
                                 ),
-                                textAlign: TextAlign.center,
-                              )
-                            ]),
-                          ))),
+                                Text(
+                                  'Contact /\nInfomations',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ]),
+                            ))),
+                  )
                 ],
               ),
               const SizedBox(
@@ -315,54 +360,54 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   const Divider(),
                   GestureDetector(
-                    onTap: (){
-                      Navigator.push(
+                      onTap: () {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => EventDetail()),
                         );
-                    },
-                        child:
-                
-                  Stack(
-                    children: [
-                      Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.grey.shade300,
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          height: 120,
-                          child: FittedBox(
-                              fit: BoxFit.fitHeight,
-                              child: Image.asset('assets/pictures/event.jpg'))),
-                      Positioned(
-                          bottom: 10,
-                          left: 20,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Samedi 19 septembre 2023 | 18h-20',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
+                      },
+                      child: Stack(
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.grey.shade300,
                               ),
-                              Text(
-                                'Rencontre avec Sofiane Meziani',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Berlin',
-                                    fontSize: 18),
-                              ),
-                            ],
-                          ))
-                    ],
-                  )  )
+                              width: MediaQuery.of(context).size.width,
+                              height: 120,
+                              child: FittedBox(
+                                  fit: BoxFit.fitHeight,
+                                  child: Image.asset(
+                                      'assets/pictures/event.jpg'))),
+                          Positioned(
+                              bottom: 10,
+                              left: 20,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Samedi 19 septembre 2023 | 18h-20',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12),
+                                  ),
+                                  Text(
+                                    'Rencontre avec Sofiane Meziani',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Berlin',
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ))
+                        ],
+                      ))
                 ],
               ),
               const SizedBox(
-                height: 10,              
-                ),
+                height: 10,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -419,8 +464,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 style: TextStyle(color: Colors.black),
                                 maxLines: 2,
                               )),
-
-                   
                         ],
                       ),
                       const SizedBox(

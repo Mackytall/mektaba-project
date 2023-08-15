@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:test/pages/mektaba_owner/add_book_form.dart';
-import 'package:test/pages/mektaba_owner/add_book_from_isbn.dart';
-import 'package:test/pages/mektaba_owner/scan_book.dart';
-import 'package:test/pages/mektabas/mektaba_main_screen.dart';
+import 'package:test/pages/mektaba_owner/add_book/add_book_form.dart';
+import 'package:test/pages/mektaba_owner/add_book/add_book_from_isbn.dart';
+import 'package:test/pages/mektaba_owner/add_book/scan_book.dart';
+import 'package:test/pages/mektaba/mektaba_main_screen.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import 'package:test/widget/textField.dart';
 
