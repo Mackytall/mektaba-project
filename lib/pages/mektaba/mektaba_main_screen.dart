@@ -6,13 +6,10 @@ import 'package:test/pages/authentification/login.dart';
 import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
 import 'package:test/pages/mektaba/event_detail.dart';
 import 'package:test/pages/mektaba/mektaba_detail.dart';
-import 'package:test/pages/mektaba/select_mektaba.dart';
-import 'package:test/pages/mektaba_owner/member/member_management.dart';
 import 'package:test/pages/mektaba_owner/member/member_validation.dart';
 import 'package:test/pages/profile.dart';
-import 'package:test/pages/services/ApiService.dart';
+import 'package:test/services/ApiService.dart';
 import 'package:test/pages/splash_screen.dart';
-import 'package:test/pages/testApi.dart';
 import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
@@ -51,11 +48,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
-  late Future<List<Book>> futureBooks;
+  late Future<dynamic> futureBooks;
   @override
   void initState() {
     super.initState();
-    futureBooks = ApiService().fetchBooks();
+    futureBooks = ApiService().apiCall(StocksEndpoint());
   }
 
   @override
@@ -69,18 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             children: <Widget>[
               const SizedBox(height: 20),
-              FutureBuilder(
-                  future: futureBooks,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final data = snapshot.data;
-                      if (data!.length > 0) return Text(data[0].title);
-                      return Text("No mektaba");
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
-                    }
-                    return const CircularProgressIndicator();
-                  }),
 // Mektaba main screen's Header
               Row(
                 children: [
@@ -145,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white),
                     onPressed: () {
-                      ApiService().fetchBooks();
+                      // ApiService().fetchBooks();
                     },
                     child: Row(
                       children: [
