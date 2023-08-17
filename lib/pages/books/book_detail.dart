@@ -4,7 +4,10 @@ import 'package:test/widget/app_bar_builder.dart';
 class BookDetail extends StatefulWidget {
   const BookDetail({
     super.key,
+    this.stock,
   });
+
+  final stock;
 
   @override
   State<BookDetail> createState() => _BookDetailState();
@@ -57,34 +60,30 @@ class _BookDetailState extends State<BookDetail>
                   ),
 // Book title
                   Text(
-                    "Les Prophètes racontés aux enfants",
+                    widget.stock.book.title,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Berlin',
                         fontSize: 15),
                   ),
-                  Text("Editions Tawhid"),
+                  Text(widget.stock.book.edition),
                   const SizedBox(
                     height: 20,
                   ),
 
 //  Book reservation
                   Row(
-
                     children: [
                       Flexible(
-                          child: 
-                          Image.asset(
-                            alignment: Alignment.topLeft,
-                            'assets/pictures/wajiz.jpg',
-                            width: MediaQuery.of(context).size.width / 1.6,
-                            height: MediaQuery.of(context).size.height / 4,
-                          ),
-                          ),
-
+                        child: Image.asset(
+                          alignment: Alignment.topLeft,
+                          'assets/pictures/wajiz.jpg',
+                          width: MediaQuery.of(context).size.width / 1.6,
+                          height: MediaQuery.of(context).size.height / 4,
+                        ),
+                      ),
                       Flexible(
-                        child: 
-                        Container(
+                        child: Container(
                           width: MediaQuery.of(context).size.width / 1.3,
                           height: MediaQuery.of(context).size.height / 4,
                           child: Column(
@@ -173,12 +172,12 @@ class _BookDetailState extends State<BookDetail>
                                     children: [
                                       SingleChildScrollView(
                                         child: Text(
-                                          "Par la grâce d'Allah, un nombre important d'œuvres présentant les aspects les plus importants du fiqh sont à présent disponibles dans de nombreuses langues. Cependant, Le Wajiz ou le sommaire de la jurisprudence à la lumière de la Sounna et du Coran, aux aspects uniques en son genre, l'ont rendu très populaire dans sa langue d'origine, l'arabe, et, si Allah le veut, il contribuera également de manière importante à la littérature islamique disponible en français. L'auteur a, d'une part, restreint les sources d'où il tire les règles du fiqh, au Coran et aux hadiths authentiques du Prophète (Paix et Bénédictions d'Allah sur lui), tout en prenant grand soin d'éviter les hadiths faibles ou rejetés que l'on trouve encore dans bien des livres de fiqh. Pour s'assurer davantage que son œuvre soit une fiabilité exemplaire, l'auteur a, d'autre part, limité ses commentaires à ce qui provient directement du Coran et de la Sounna pour le mettre ainsi hors de portée des critiques. Il s'est enfin efforcé d'éviter les polémiques dans lesquels les juristes sont souvent entraînés, afin de proposer une œuvre dans laquelle les lecteurs peuvent avoir une confiance totale. Ce livre s'adresse tant à tous ceux qui désirent approfondir leur connaissance des règles de base qui régissent le quotidien du musulman pieux, qu'à ceux qui déjà sont déjà familiers avec un certain nombre de ces règles, et qui désirent avoir à portée de main un recueil condensé et facile d'accès.",
+                                          widget.stock.book.description,
                                         ),
                                       ),
                                       SingleChildScrollView(
                                           child: Text(
-                                              "AUTEUR : Siham Andalouci \nEDITIONS : Tawhid \nANNE : 2019 \nLANGUE : Français \nNOMBRE DE PAGES : 176 \nEAN13 : 9782848624181 \nTHEME : Histoires, Prophètes, Coran, Enfants")),
+                                              "AUTEUR : ${widget.stock.book.author}, \nEDITIONS : ${widget.stock.book.edition} \nANNE : ${widget.stock.book.year} \nLANGUE : ${widget.stock.book.language.join(',')} \nNOMBRE DE PAGES : ${widget.stock.book.numberOfPages} \nEAN13 : ${widget.stock.book.ean13} ")),
                                     ]))
                           ],
                         ),

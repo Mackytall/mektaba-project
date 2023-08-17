@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:test/constantes.dart';
+import 'package:test/models/stock.dart';
+import 'package:test/models/stockWithPopulate.dart';
 import 'package:test/pages/authentification/Register.dart';
 import 'package:test/pages/books/book_consultation.dart';
 import 'package:test/pages/authentification/login.dart';
+import 'package:test/pages/books/book_detail.dart';
 import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
 import 'package:test/pages/mektaba/event_detail.dart';
 import 'package:test/pages/mektaba/mektaba_detail.dart';
@@ -14,7 +17,7 @@ import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '../../models/book.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
 class MektabaMainScreen extends StatelessWidget {
   const MektabaMainScreen({super.key});
@@ -48,11 +51,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
-  late Future<dynamic> futureBooks;
+  late Future<dynamic> futureStocks;
+  late List<dynamic> stocks = [];
   @override
   void initState() {
     super.initState();
-    futureBooks = ApiService().apiCall(StocksEndpoint());
+    futureStocks = ApiService()
+        .apiCall(ApiService().stocksWithPopulate, StockWithPopulate.fromJson);
   }
 
   @override
@@ -69,6 +74,62 @@ class _MyHomePageState extends State<MyHomePage> {
 // Mektaba main screen's Header
               Row(
                 children: [
+                  // LayoutGrid(
+                  //   areas: '''
+                  //     mektabaLogo welcome  welcome
+                  //     mektabaLogo mektabaName mektabaName
+                  //     mektabaLogo mektabaAddress  mektabaAddress
+                  //   ''',
+                  //   columnSizes: [70.px, 20.px, auto],
+                  //   rowSizes: [
+                  //     30.px,
+                  //     40.px,
+                  //     20.px,
+                  //   ],
+                  //   children: [
+                  //     Padding(
+                  //         padding: EdgeInsets.only(right: 16),
+                  //         child: GestureDetector(
+                  //             onTap: () {
+                  //               Navigator.push(
+                  //                 context,
+                  //                 MaterialPageRoute(
+                  //                     builder: (context) => MektabaDetail()),
+                  //               );
+                  //             },
+                  //             child: Image.asset(
+                  //               mektabas[0].logo,
+                  //             ))).inGridArea("mektabaLogo"),
+                  //     Text('Bienvenue dans la mektaba',
+                  //             style:
+                  //                 TextStyle(fontFamily: 'Berlin', fontSize: 20))
+                  //         .inGridArea("welcome"),
+                  //     Text(
+                  //       mektabas[0].name,
+                  //       style: TextStyle(
+                  //         fontFamily: 'Berlin',
+                  //         fontSize: 30,
+                  //       ),
+                  //       textAlign: TextAlign.left,
+                  //     ).inGridArea("mektabaName"),
+                  //     InkWell(
+                  //       onTap: () => openMapsSheet(
+                  //           context, mektabas[0].fullAddress, mektabas[0].name),
+                  //       child: Row(
+                  //         children: [
+                  //           Icon(
+                  //             Icons.location_on,
+                  //             color: Color(0xFF4B9A6F),
+                  //           ),
+                  //           Text(
+                  //             mektabas[0].fullAddress,
+                  //             // style: TextStyle(fontSize: 15),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ).inGridArea("mektabaAddress"),
+                  //   ],
+                  // ),
                   Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
@@ -105,9 +166,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Icons.location_on,
                                 color: Color(0xFF4B9A6F),
                               ),
-                              Text(mektabas[0].fullAddress,
-                                  style: TextStyle(fontSize: 15),
-                                  textAlign: TextAlign.left),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                child: Text(mektabas[0].fullAddress,
+                                    // style: TextStyle(fontSize: 15),
+                                    textAlign: TextAlign.left),
+                              )
                             ],
                           ),
                         ),
@@ -131,6 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         surfaceTintColor: Colors.white),
                     onPressed: () {
                       // ApiService().fetchBooks();
+                      print(stocks);
                     },
                     child: Row(
                       children: [
@@ -215,7 +280,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const BookConsultation()),
+                              builder: (context) => BookConsultation(
+                                    stocks: stocks,
+                                  )),
                         );
                       },
                       child: Card(
@@ -392,6 +459,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 10,
               ),
               Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
@@ -399,88 +467,84 @@ class _MyHomePageState extends State<MyHomePage> {
                     textAlign: TextAlign.start,
                   ),
                   const Divider(),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          // Books
-                          Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                              ),
-                              width: 80,
-                              height: 120,
-                              child: FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Image.asset(
-                                      'assets/pictures/wajiz.jpg'))),
-                          SizedBox(
-                              width: 80,
-                              // height: 100,
-                              child: AutoSizeText(
-                                'Le prophete racontes aux salam',
-                                style: TextStyle(color: Colors.black),
-                                maxLines: 2,
-                              )),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Column(
-                        children: [
-                          // Books
-                          Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                              ),
-                              width: 80,
-                              height: 120,
-                              child: FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Image.asset(
-                                      'assets/pictures/wajiz.jpg'))),
-                          SizedBox(
-                              width: 80,
-                              child: AutoSizeText(
-                                'Le prophete racontes aux salam',
-                                style: TextStyle(color: Colors.black),
-                                maxLines: 2,
-                              )),
-                        ],
-                      ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      Column(
-                        children: [
-                          // Books
-                          Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                              ),
-                              width: 80,
-                              height: 120,
-                              child: FittedBox(
-                                  fit: BoxFit.fitWidth,
-                                  child: Image.asset(
-                                      'assets/pictures/wajiz.jpg'))),
-                          SizedBox(
-                              width: 80,
-                              child: AutoSizeText(
-                                'Le prophete racontes aux salam',
-                                style: TextStyle(color: Colors.black),
-                                maxLines: 2,
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
+                  FutureBuilder(
+                      future: futureStocks,
+                      builder: (context, snapshot) {
+                        // the following code will
+                        // loop over stocks from api call and saves books id in list.
+                        //this will allow us to only display one copy of a book
+                        if (snapshot.hasData) {
+                          var uniqueBooksId = [];
+                          for (var stock in snapshot.data!) {
+                            var bookId = stock.book.id;
+                            if (uniqueBooksId.length == 0) {
+                              uniqueBooksId.add(bookId);
+                              stocks.add(stock);
+                            } else {
+                              if (uniqueBooksId.contains(bookId) == false) {
+                                uniqueBooksId.add(bookId);
+                                stocks.add(stock);
+                              }
+                            }
+                          }
+                          return Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height / 3,
+                              child: ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: stocks.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => BookDetail(
+                                                    stock: stocks[index],
+                                                  )),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          // Books
+                                          Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey.shade300,
+                                              ),
+                                              width: 80,
+                                              height: 120,
+                                              child: FittedBox(
+                                                  fit: BoxFit.fitWidth,
+                                                  child: Image.asset(
+                                                      'assets/pictures/wajiz.jpg'))),
+                                          SizedBox(
+                                              width: 80,
+                                              // height: 100,
+                                              child: AutoSizeText(
+                                                stocks[index].book.title,
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                                maxLines: 2,
+                                              )),
+                                        ],
+                                      ),
+                                    );
+                                  }));
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+                        return const CircularProgressIndicator();
+                      }),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
             ],
           ),
         ),
