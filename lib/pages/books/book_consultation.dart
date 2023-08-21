@@ -141,9 +141,14 @@ class _BookConsultationState extends State<BookConsultation> {
                                                   .width *
                                               0.6,
                                           child: Text(
-                                            "hello",
-                                            // widget.stocks[index].book.title,
+                                            widget.stocks[index].book.title,
                                             overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Text(
+                                          widget.stocks[index].book.author,
+                                          style: TextStyle(
+                                            fontSize: 12,
                                           ),
                                         ),
                                         Text(
