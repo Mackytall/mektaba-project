@@ -118,9 +118,12 @@ class _BookConsultationState extends State<BookConsultation> {
                                   child: Row(children: [
                                     Container(
                                         padding: EdgeInsets.only(right: 16),
-                                        // width:
-                                        //     MediaQuery.of(context).size.width / 5,
-                                        // height: 120,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                5,
+                                        height:
+                                            MediaQuery.of(context).size.height /
+                                                8,
                                         child: FittedBox(
                                             fit: BoxFit.fitWidth,
                                             child: Image.asset(
@@ -138,7 +141,8 @@ class _BookConsultationState extends State<BookConsultation> {
                                                   .width *
                                               0.6,
                                           child: Text(
-                                            widget.stocks[index].book.title,
+                                            "hello",
+                                            // widget.stocks[index].book.title,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),

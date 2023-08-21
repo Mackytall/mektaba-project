@@ -184,19 +184,24 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: 10,
               ),
 //  Button
+              // Container(
+              //   color: Colors.blue,
+              //   width: MediaQuery.of(context).size.width,
+              // child:
               Row(
+                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 3,
+                        maximumSize: Size(
+                            MediaQuery.of(context).size.width / 2.2,
+                            MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white),
-                    onPressed: () {
-                      // ApiService().fetchBooks();
-                      print(stocks);
-                    },
+                    onPressed: () {},
                     child: Row(
                       children: [
                         Icon(Icons.favorite),
@@ -204,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 8,
                         ),
                         SizedBox(
-                            width: MediaQuery.of(context).size.width / 4,
+                            width: MediaQuery.of(context).size.width / 4.5,
                             child: Text('Ajouter en favoris',
                                 style: TextStyle(
                                   color: Colors.black,
@@ -215,6 +220,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 3,
+                        maximumSize: Size(
+                            MediaQuery.of(context).size.width / 2.2,
+                            MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white),
@@ -231,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 8,
                         ),
                         SizedBox(
-                            width: MediaQuery.of(context).size.width / 4,
+                            width: MediaQuery.of(context).size.width / 4.5,
                             child: AutoSizeText('Demande d’adhésion',
                                 style: TextStyle(color: Colors.black))),
                       ],
@@ -239,7 +247,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-// Search bar
+              // ),
+              // Search bar
               SizedBox(
                 height: 10,
               ),
@@ -470,10 +479,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   FutureBuilder(
                       future: futureStocks,
                       builder: (context, snapshot) {
-                        // the following code will
-                        // loop over stocks from api call and saves books id in list.
-                        //this will allow us to only display one copy of a book
                         if (snapshot.hasData) {
+                          // the following code will
+                          // loop over stocks from api call and saves books id in list.
+                          //this will allow us to only display one copy of a book
                           var uniqueBooksId = [];
                           for (var stock in snapshot.data!) {
                             var bookId = stock.book.id;
