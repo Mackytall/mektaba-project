@@ -9,6 +9,7 @@ import 'package:test/pages/books/book_detail.dart';
 import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
 import 'package:test/pages/mektaba/event_detail.dart';
 import 'package:test/pages/mektaba/mektaba_detail.dart';
+import 'package:test/pages/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/pages/mektaba_owner/member/list_of_mektaba.dart';
 import 'package:test/pages/mektaba_owner/member/member_validation.dart';
 import 'package:test/pages/profile.dart';

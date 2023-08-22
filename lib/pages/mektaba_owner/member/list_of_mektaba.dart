@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:test/models/stockWithPopulate.dart';
 import 'package:test/pages/books/book_detail.dart';
+import 'package:test/pages/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/widget/app_bar_builder.dart';
 
 class ListMektaba extends StatefulWidget {
@@ -23,7 +24,16 @@ class _ListMektaba extends State<ListMektaba> {
     return Scaffold(
       appBar: AppBarBuilder(goBackIcon: true, actionIcon: true),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return AddMektaba();
+              },
+            ),
+          );
+        },
         backgroundColor: Colors.black,
         child: Icon(
           Icons.add_rounded,
