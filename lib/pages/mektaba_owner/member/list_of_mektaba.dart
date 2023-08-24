@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:test/models/mektaba.dart';
 import 'package:test/models/stockWithPopulate.dart';
 import 'package:test/pages/books/book_detail.dart';
 import 'package:test/pages/mektaba_owner/member/add_a_mektaba.dart';
+import 'package:test/services/ApiService.dart';
 import 'package:test/widget/app_bar_builder.dart';
 
 class ListMektaba extends StatefulWidget {
@@ -18,6 +20,15 @@ class ListMektaba extends StatefulWidget {
 
 class _ListMektaba extends State<ListMektaba> {
   final TextEditingController _searchController = TextEditingController();
+  late Future<dynamic> futureMektabas;
+
+  @override
+  void initState() {
+    ApiService().apiCall(ApiService().mektabas, Mektaba.fromJson);
+    super.initState();
+    futureMektabas =
+        ApiService().apiCall(ApiService().mektabas, Mektaba.fromJson);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,51 +84,66 @@ class _ListMektaba extends State<ListMektaba> {
               ),
               //LISTE DES ETABLISSEMENT
               Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      children: [
-                        //image
-                        // 1)TODO: CHANGER LES INFORMATIONS POUR PRENDRE CEUX DE LA BASE DE DONNEES
-                        Image.asset(
-                          'assets/pictures/logo_tawhid.png',
-                          height: 50.0,
-                        ),
-                        SizedBox(
-                          width: 10.0,
-                        ),
-                        //Partie Texte
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Centre Tawhid',
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.black,
+                  child: FutureBuilder(
+                      future: futureMektabas,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.separated(
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                              width: 10,
+                              height: 10,
+                              child: Divider(),
+                            ),
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  //image
+                                  // 1)TODO: CHANGER LES INFORMATIONS POUR PRENDRE CEUX DE LA BASE DE DONNEES
+                                  Image.network(
+                                    snapshot.data[index].logo,
+                                    height: 50.0,
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  //Partie Texte
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        snapshot.data[index].name,
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${snapshot.data[index].address}, ${snapshot.data[index].zipCode}, ${snapshot.data[index].city}, ${snapshot.data[index].country}",
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(
-                              '8 Rue Notre Dame, 69006 Lyon',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Colors.black,
-                              ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              '${snapshot.error} occurred',
+                              style: TextStyle(fontSize: 18),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  separatorBuilder: (context, index) => const SizedBox(
-                    width: 10,
-                    height: 10,
-                    child: Divider(),
-                  ),
-                  itemCount: 3,
-                ),
-              ),
+                          );
+                        }
+                        return Center(child: CircularProgressIndicator());
+                      })),
             ],
           ),
         ),

@@ -3,37 +3,33 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'stock.g.dart';
 
-enum StockStatus {
-  draft,
-  published,
-  deleted,
-}
+enum StockStatus { loan, available, reserved, deleted }
 
-extension StockStatusExtension on StockStatus {
-  String get value {
-    switch (this) {
-      case StockStatus.draft:
-        return 'draft';
-      case StockStatus.published:
-        return 'online';
-      case StockStatus.deleted:
-        return 'deleted';
-    }
-  }
+// extension StockStatusExtension on StockStatus {
+//   String get value {
+//     switch (this) {
+//       case StockStatus.draft:
+//         return 'draft';
+//       case StockStatus.published:
+//         return 'online';
+//       case StockStatus.deleted:
+//         return 'deleted';
+//     }
+//   }
 
-  static StockStatus fromValue(String value) {
-    switch (value) {
-      case 'draft':
-        return StockStatus.draft;
-      case 'online':
-        return StockStatus.published;
-      case 'deleted':
-        return StockStatus.deleted;
-      default:
-        throw ArgumentError('Unknown value: $value');
-    }
-  }
-}
+//   static StockStatus fromValue(String value) {
+//     switch (value) {
+//       case 'draft':
+//         return StockStatus.draft;
+//       case 'online':
+//         return StockStatus.published;
+//       case 'deleted':
+//         return StockStatus.deleted;
+//       default:
+//         throw ArgumentError('Unknown value: $value');
+//     }
+//   }
+// }
 
 @JsonSerializable(explicitToJson: true)
 class Stock {
