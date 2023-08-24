@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:test/widget/textField.dart';
 import '../../../utils/utils.dart';
-import '../../../models/book_copy.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddBookForm extends StatefulWidget {
@@ -35,7 +34,7 @@ class _AddBookForm extends State<AddBookForm> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             title: const Text('Ajouter une image'),
-            content:  Container(
+            content: Container(
               height: MediaQuery.of(context).size.height / 6,
               child: Column(
                 children: [
@@ -80,7 +79,7 @@ class _AddBookForm extends State<AddBookForm> {
   late TextEditingController author;
   late TextEditingController ean13;
   late TextEditingController publisher;
-  late TextEditingController  year;
+  late TextEditingController year;
   late TextEditingController language;
   late TextEditingController pageNumber;
   late TextEditingController description;
@@ -210,7 +209,7 @@ class _AddBookForm extends State<AddBookForm> {
                 //             SizedBox(
                 //               width: MediaQuery.of(context).size.width / 2.5,
                 //               child: SetTextField(
-                //                   controller: year, labelText: "Année", 
+                //                   controller: year, labelText: "Année",
                 //                   onSaved: (value) {
                 //                     if(value != null) {
                 //                       newBook.year = int.parse(value);
@@ -250,7 +249,7 @@ class _AddBookForm extends State<AddBookForm> {
                 //             SizedBox(
                 //               width: MediaQuery.of(context).size.width / 2.5,
                 //               child: SetTextField(
-                //                   controller: pageNumber, labelText: "Pages", 
+                //                   controller: pageNumber, labelText: "Pages",
                 //                   onSaved: (value) {
                 //                     if (value != null) {
                 //                       newBook.pageNumber = int.parse(value);
@@ -259,13 +258,13 @@ class _AddBookForm extends State<AddBookForm> {
                 //             ),
                 //           ],
                 //         ),
-                        
+
                 //         SetTextField(
                 //             controller: description,
                 //             hintText: "Description",
                 //             maxLines: 6,
                 //             onSaved: (value) => newBook.description = value,),
-                        
+
                 //         Container(
                 //             margin: const EdgeInsets.all(16),
                 //             child: ElevatedButton(

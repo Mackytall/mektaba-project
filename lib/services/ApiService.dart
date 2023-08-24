@@ -8,6 +8,7 @@ class ApiService {
   String stocks = "stocks";
   String books = "books";
   String stocksWithPopulate = "stocks/populate";
+  String mektabas = "mektabas";
 
   String prepareQuery(String fetchedData) {
     return "$baseUrl/$fetchedData";
@@ -21,9 +22,11 @@ class ApiService {
       decodedDataIndex = data;
     }
     try {
+      // print('in try catch block');
       final response = await http.get(Uri.parse("$baseUrl/$data"));
       if (response.statusCode == 200) {
         final decodedData = json.decode(response.body);
+        // print(decodedData);
         final result = (decodedData[decodedDataIndex] as List)
             .map((item) => ModelFromJson(item))
             .toList();
