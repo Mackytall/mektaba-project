@@ -1,8 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:test/models/mektaba.dart';
-import 'package:test/models/stockWithPopulate.dart';
-import 'package:test/pages/books/book_detail.dart';
 import 'package:test/pages/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/services/ApiService.dart';
 import 'package:test/widget/app_bar_builder.dart';
@@ -121,13 +118,18 @@ class _ListMektaba extends State<ListMektaba> {
                                           color: Colors.black,
                                         ),
                                       ),
-                                      Text(
-                                        "${snapshot.data[index].address}, ${snapshot.data[index].zipCode}, ${snapshot.data[index].city}, ${snapshot.data[index].country}",
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.black,
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                1.6,
+                                        child: Text(
+                                          "${snapshot.data[index].address}, ${snapshot.data[index].zipCode}, ${snapshot.data[index].city}, ${snapshot.data[index].country}",
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ],
