@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:test/constantes.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test/models/stock.dart';
 import 'package:test/models/stockWithPopulate.dart';
 import 'package:test/pages/authentification/Register.dart';
