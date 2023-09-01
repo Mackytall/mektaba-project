@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:test/models/stockWithPopulate.dart';
+// import 'package:test/models/stockWithPopulate.dart';
 import 'package:test/pages/books/book_detail.dart';
 import 'package:test/widget/app_bar_builder.dart';
 
