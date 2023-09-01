@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:test/models/book.dart';
 
-part 'stockWithPopulate.g.dart';
+part 'stockWithBookDetail.g.dart';
 
 enum StockStatus {
   draft,
@@ -37,7 +37,7 @@ extension StockStatusExtension on StockStatus {
 }
 
 @JsonSerializable(explicitToJson: true)
-class StockWithPopulate {
+class StockWithBookDetail {
   @JsonKey(name: '_id')
   String id;
   String internalHu;
@@ -53,7 +53,7 @@ class StockWithPopulate {
   String updatedAt;
   String? deletedAt;
 
-  StockWithPopulate({
+  StockWithBookDetail({
     required this.id,
     required this.internalHu,
     required this.externalHu,
@@ -69,11 +69,11 @@ class StockWithPopulate {
     this.deletedAt,
   });
 
-  /// Connect the generated [_$StockWithPopulateFromJson] function to the `fromJson`
+  /// Connect the generated [_$StockWithBookDetailFromJson] function to the `fromJson`
   /// factory.
-  factory StockWithPopulate.fromJson(Map<String, dynamic> json) =>
-      _$StockWithPopulateFromJson(json);
+  factory StockWithBookDetail.fromJson(Map<String, dynamic> json) =>
+      _$StockWithBookDetailFromJson(json);
 
-  /// Connect the generated [_$StockWithPopulateToJson] function to the `toJson` method.
-  Map<String, dynamic> toJson() => _$StockWithPopulateToJson(this);
+  /// Connect the generated [_$StockWithBookDetailToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$StockWithBookDetailToJson(this);
 }

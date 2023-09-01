@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test/constantes.dart';
 import 'package:test/models/stock.dart';
-import 'package:test/models/stockWithPopulate.dart';
+import 'package:test/models/stockWithBookDetail.dart';
 import 'package:test/pages/authentification/Register.dart';
 import 'package:test/pages/books/book_consultation.dart';
 import 'package:test/pages/authentification/login.dart';
@@ -35,8 +35,9 @@ class MektabaMainScreen extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      //home: const Splash(),
-      home: const ListMektaba(),
+      // home: const Splash(),
+      // home: const ListMektaba(),
+      home: Register(),
       // const TestApi()
     );
   }
@@ -58,8 +59,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    futureStocks = ApiService()
-        .apiCall(ApiService().stocksWithPopulate, StockWithPopulate.fromJson);
+    futureStocks = ApiService().apiCall(
+        ApiService().stocksWithBookDetail, StockWithBookDetail.fromJson);
   }
 
   @override

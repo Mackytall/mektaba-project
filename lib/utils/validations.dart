@@ -28,9 +28,15 @@ bool isValidZipCode(String originalString) {
   return regex.hasMatch(originalString);
 }
 
+bool isValidAddress(String originalString) {
+  String pattern = r'^\d+\s[\w\s-]+$';
+  RegExp regex = RegExp(pattern);
+  return regex.hasMatch(originalString);
+}
+
 bool isValidPassword(String originalString) {
   String pattern =
-      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+      r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~.]).{8,}$';
   RegExp regex = RegExp(pattern);
   return regex.hasMatch(originalString);
 }

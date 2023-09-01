@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'stockWithPopulate.dart';
+part of 'stockWithBookDetail.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-StockWithPopulate _$StockWithPopulateFromJson(Map<String, dynamic> json) =>
-    StockWithPopulate(
+StockWithBookDetail _$StockWithBookDetailFromJson(Map<String, dynamic> json) =>
+    StockWithBookDetail(
       id: json['_id'] as String,
       internalHu: json['internalHu'] as String,
       externalHu: json['externalHu'] as String,
@@ -23,7 +23,8 @@ StockWithPopulate _$StockWithPopulateFromJson(Map<String, dynamic> json) =>
       deletedAt: json['deletedAt'] as String?,
     );
 
-Map<String, dynamic> _$StockWithPopulateToJson(StockWithPopulate instance) =>
+Map<String, dynamic> _$StockWithBookDetailToJson(
+        StockWithBookDetail instance) =>
     <String, dynamic>{
       '_id': instance.id,
       'internalHu': instance.internalHu,
