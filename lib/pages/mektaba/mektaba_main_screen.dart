@@ -12,6 +12,7 @@ import 'package:test/pages/mektaba/mektaba_detail.dart';
 import 'package:test/pages/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/pages/mektaba_owner/member/list_of_mektaba.dart';
 import 'package:test/pages/mektaba_owner/member/member_validation.dart';
+import 'package:test/pages/mektaba_owner/member/setup_mektaba1.dart';
 import 'package:test/pages/profile.dart';
 import 'package:test/services/ApiService.dart';
 import 'package:test/pages/splash_screen.dart';
@@ -37,7 +38,7 @@ class MektabaMainScreen extends StatelessWidget {
         useMaterial3: true,
       ),
       //home: const Splash(),
-      home: const ListMektaba(),
+      home: Setup_Mektabe(),
       // const TestApi()
     );
   }
