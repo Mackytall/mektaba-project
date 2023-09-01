@@ -21,7 +21,6 @@ class _ListMektaba extends State<ListMektaba> {
 
   @override
   void initState() {
-    ApiService().apiCall(ApiService().mektabas, Mektaba.fromJson);
     super.initState();
     futureMektabas =
         ApiService().apiCall(ApiService().mektabas, Mektaba.fromJson);
@@ -99,10 +98,10 @@ class _ListMektaba extends State<ListMektaba> {
                                 children: [
                                   //image
                                   // 1)TODO: CHANGER LES INFORMATIONS POUR PRENDRE CEUX DE LA BASE DE DONNEES
-                                  Image.network(
-                                    snapshot.data[index].logo,
-                                    height: 50.0,
-                                  ),
+                                  // Image.network(
+                                  //   snapshot.data[index].logo,
+                                  //   height: 50.0,
+                                  // ),
                                   SizedBox(
                                     width: 10.0,
                                   ),

@@ -4,49 +4,49 @@ part 'mektaba.g.dart';
 
 enum TimeUnits { day, month, year }
 
-class Faq {
-  String question;
-  String response;
+// class Faq {
+//   String question;
+//   String response;
 
-  Faq({
-    required this.question,
-    required this.response,
-  });
-}
+//   Faq({
+//     required this.question,
+//     required this.response,
+//   });
+// }
 
-enum OfficeHours { day, hours }
+// enum OfficeHours { day, hours }
 
 @JsonSerializable(explicitToJson: true)
 class Mektaba {
   @JsonKey(name: '_id')
   String id;
   String name;
-  String description;
-  String logo;
-  String cover;
+  String? description;
+  String? logo;
+  String? cover;
   String address;
   String? adressComplement;
   String zipCode;
   String city;
   String country;
-  String phone;
-  String email;
-  int loanDuration;
-  TimeUnits loanUnit;
-  int simultaneousLoans;
-  String loanCost;
-  String lateCost;
+  String? phone;
+  String? email;
+  int? loanDuration;
+  TimeUnits? loanUnit;
+  int? simultaneousLoans;
+  String? loanCost;
+  String? lateCost;
   String? membershipPeriod;
   int? reservedStatusDuration;
   TimeUnits? reservedStatusDurationUnit;
   bool disableReservedOption;
   List<Object>? faq; // maybe we can make the type stronger
-  List<Object> officeHours; // maybe we can make the type stronger
+  List<Object>? officeHours; // maybe we can make the type stronger
   bool accessibleToEveryone;
   bool canPerformAblution;
   bool canPray;
   bool canTakeCourses;
-  List<String> employees;
+  List<String>? employees;
   String owner;
   bool isEnabled;
   String? website;
@@ -57,34 +57,34 @@ class Mektaba {
   Mektaba({
     required this.id,
     required this.name,
-    required this.description,
-    required this.logo,
-    required this.cover,
+    this.description,
+    this.logo,
+    this.cover,
     required this.address,
     this.adressComplement,
     required this.zipCode,
     required this.city,
     required this.country,
-    required this.phone,
-    required this.email,
-    required this.loanDuration,
-    required this.loanUnit,
-    required this.simultaneousLoans,
-    required this.loanCost,
-    required this.lateCost,
+    this.phone,
+    this.email,
+    this.loanDuration,
+    this.loanUnit,
+    this.simultaneousLoans,
+    this.loanCost,
+    this.lateCost,
     this.membershipPeriod,
     this.reservedStatusDuration,
     this.reservedStatusDurationUnit,
     this.disableReservedOption = false,
-    required this.faq,
-    required this.officeHours,
+    this.faq,
+    this.officeHours,
     this.accessibleToEveryone = false,
     this.canPerformAblution = false,
     this.canPray = false,
     this.canTakeCourses = false,
-    this.employees = const [],
+    this.employees,
     required this.owner,
-    this.isEnabled = true,
+    this.isEnabled = false,
     this.website,
     this.facebook,
     this.whatsapp,
