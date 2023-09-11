@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
-import 'package:test/pages/mektaba_owner/add_book/isbn_dialog.dart';
+import 'package:test/pages/books/add_book/add_book.dart';
+import 'package:test/pages/books/add_book/isbn_dialog.dart';
 
 class ScanBook extends StatefulWidget {
   MobileScannerController cameraController;
@@ -18,15 +18,14 @@ class ScanBook extends StatefulWidget {
 }
 
 class _ScanBookState extends State<ScanBook> {
-
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     widget.cameraController = MobileScannerController();
   }
 
-@override
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
@@ -41,11 +40,10 @@ class _ScanBookState extends State<ScanBook> {
         controller: widget.cameraController,
         onDetect: (capture) {
           final List<Barcode> barcodes = capture.barcodes;
-            setState(() {
-              widget.scannedIsbn = barcodes[0].rawValue;
-            });
-            Navigator.of(context)
-                .pop(widget.scannedIsbn); 
+          setState(() {
+            widget.scannedIsbn = barcodes[0].rawValue;
+          });
+          Navigator.of(context).pop(widget.scannedIsbn);
         },
       ),
     );

@@ -3,6 +3,11 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
 
+String cleanupWhitespace(String input) {
+  final whitespaceRE = RegExp(r"(?! )\s+| \s+");
+  return input.replaceAll(whitespaceRE, " ");
+}
+
 Future<Coords> getGeoCoderData(address) async {
   List<Location> locations = await locationFromAddress(address);
   return Coords(locations.first.latitude, locations.first.longitude);

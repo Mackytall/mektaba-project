@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:test/constantes.dart';
 import 'package:test/models/stock.dart';
 import 'package:test/models/stockWithBookDetail.dart';
-import 'package:test/pages/authentification/Register.dart';
+import 'package:test/pages/auth/sign_up.dart';
 import 'package:test/pages/books/book_consultation.dart';
-import 'package:test/pages/authentification/login.dart';
+import 'package:test/pages/auth/login.dart';
 import 'package:test/pages/books/book_detail.dart';
-import 'package:test/pages/mektaba_owner/add_book/add_book.dart';
-import 'package:test/pages/mektaba/event_detail.dart';
+import 'package:test/pages/books/add_book/add_book.dart';
+import 'package:test/pages/events/event_detail.dart';
 import 'package:test/pages/mektaba/mektaba_detail.dart';
-import 'package:test/pages/mektaba_owner/member/add_a_mektaba.dart';
-import 'package:test/pages/mektaba_owner/member/list_of_mektaba.dart';
-import 'package:test/pages/mektaba_owner/member/member_validation.dart';
-import 'package:test/pages/profile.dart';
+import 'package:test/pages/mektaba/mektaba_owner/member/add_a_mektaba.dart';
+import 'package:test/pages/mektaba/mektaba_owner/member/list_of_mektaba.dart';
+import 'package:test/pages/membership/member_validation.dart';
+import 'package:test/pages/auth/profile.dart';
 import 'package:test/services/ApiService.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import '../../../../config/palette.dart';
 
 class MektabaMainScreen extends StatelessWidget {
   const MektabaMainScreen({super.key});
@@ -30,14 +30,18 @@ class MektabaMainScreen extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        buttonTheme: ButtonThemeData(buttonColor: Colors.yellow),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: kPrimaryColor,
+          seedColor: Palette.secondary,
         ),
+        // textTheme: TextTheme(
+
+        // ),
         useMaterial3: true,
       ),
-      // home: const Splash(),
+      home: const Splash(),
       // home: const ListMektaba(),
-      home: Register(),
+      // home: SignUp(),
       // const TestApi()
     );
   }
@@ -77,62 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
 // Mektaba main screen's Header
               Row(
                 children: [
-                  // LayoutGrid(
-                  //   areas: '''
-                  //     mektabaLogo welcome  welcome
-                  //     mektabaLogo mektabaName mektabaName
-                  //     mektabaLogo mektabaAddress  mektabaAddress
-                  //   ''',
-                  //   columnSizes: [70.px, 20.px, auto],
-                  //   rowSizes: [
-                  //     30.px,
-                  //     40.px,
-                  //     20.px,
-                  //   ],
-                  //   children: [
-                  //     Padding(
-                  //         padding: EdgeInsets.only(right: 16),
-                  //         child: GestureDetector(
-                  //             onTap: () {
-                  //               Navigator.push(
-                  //                 context,
-                  //                 MaterialPageRoute(
-                  //                     builder: (context) => MektabaDetail()),
-                  //               );
-                  //             },
-                  //             child: Image.asset(
-                  //               mektabas[0].logo,
-                  //             ))).inGridArea("mektabaLogo"),
-                  //     Text('Bienvenue dans la mektaba',
-                  //             style:
-                  //                 TextStyle(fontFamily: 'Berlin', fontSize: 20))
-                  //         .inGridArea("welcome"),
-                  //     Text(
-                  //       mektabas[0].name,
-                  //       style: TextStyle(
-                  //         fontFamily: 'Berlin',
-                  //         fontSize: 30,
-                  //       ),
-                  //       textAlign: TextAlign.left,
-                  //     ).inGridArea("mektabaName"),
-                  //     InkWell(
-                  //       onTap: () => openMapsSheet(
-                  //           context, mektabas[0].fullAddress, mektabas[0].name),
-                  //       child: Row(
-                  //         children: [
-                  //           Icon(
-                  //             Icons.location_on,
-                  //             color: Color(0xFF4B9A6F),
-                  //           ),
-                  //           Text(
-                  //             mektabas[0].fullAddress,
-                  //             // style: TextStyle(fontSize: 15),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //     ).inGridArea("mektabaAddress"),
-                  //   ],
-                  // ),
                   Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: GestureDetector(
@@ -207,7 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {},
                     child: Row(
                       children: [
-                        Icon(Icons.favorite),
+                        Icon(
+                          Icons.favorite,
+                        ),
                         SizedBox(
                           width: 8,
                         ),
@@ -232,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Login()),
+                        MaterialPageRoute(builder: (context) => Login()),
                       );
                     },
                     child: Row(
