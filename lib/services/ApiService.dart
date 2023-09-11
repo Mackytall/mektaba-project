@@ -32,7 +32,7 @@ class ApiService {
       final response = await http.get(Uri.parse("$baseUrl/$data"));
       if (response.statusCode == 200) {
         final decodedData = json.decode(response.body);
-        print(decodedData);
+        // print(decodedData);
         final result = (decodedData[decodedDataIndex] as List)
             .map((item) => ModelFromJson(item))
             .toList();

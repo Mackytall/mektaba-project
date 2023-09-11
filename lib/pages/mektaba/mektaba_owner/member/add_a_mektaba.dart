@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:test/models/user.dart';
 import 'package:test/services/ApiService.dart';
 import 'package:test/widget/app_bar_builder.dart';
-import '../../../utils/validations.dart';
+import '../../../../utils/validations.dart';
 
 class AddMektaba extends StatefulWidget {
   const AddMektaba({super.key});

@@ -1,17 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:test/services/ApiService.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:test/models/auth.dart';
+import 'package:test/models/user.dart';
+import 'package:test/providers/providers.dart';
+import 'package:test/utils/user.dart';
+import 'package:test/utils/utils.dart';
 import 'package:test/utils/validations.dart';
 import 'package:test/widget/app_bar_builder.dart';
-
-class Register extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _RegisterState();
-}
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'profile.dart';
+import 'package:image_picker/image_picker.dart';
 
 enum Gender { male, female }
 
-class _RegisterState extends State<Register> {
-  final _formKey = GlobalKey<FormState>();
+class SignUp extends HookConsumerWidget {
+  SignUp({super.key});
+
+  showSuccessDialog(
+    BuildContext context,
+  ) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return Align(
+            alignment: Alignment.center,
+            child: AlertDialog(
+                backgroundColor: Color(0xFF4B9A6F),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.thumb_up,
+                      color: Colors.white,
+                      size: 50,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Félicitations",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Pour que votre inscription soit complète, merci de cliquer sur le lien du mail envoyé.",
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Profile()),
+                        );
+                      },
+                      child: Text(
+                        "ok",
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      ))
+                ]));
+      },
+    );
+  }
+
+  final __signUpFormKey = GlobalKey<FormState>();
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -24,12 +78,50 @@ class _RegisterState extends State<Register> {
   final TextEditingController _confirmPassword = TextEditingController();
   final String passwordConditions =
       "Au moins 8 caractères\nAu moins une minuscule\nAu moins une majuscule\nAu moins un chiffre\nAu moins un caractère spécial (! @ # \$ & * ~ .)";
-  var newUser = new Map<String, dynamic>();
+  XFile? image;
+  // final ImagePicker picker = ImagePicker();
 
-  Gender? _gender = Gender.male;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final error = useState<String?>(null);
     Size _screenSize = MediaQuery.of(context).size;
+    Gender? _gender = Gender.male;
+
+    void onSignUp() async {
+      if (__signUpFormKey.currentState!.validate()) {
+        CreateUser user = CreateUser(
+            lastName: cleanupWhitespace(_lastName.text),
+            firstName: cleanupWhitespace(_firstName.text),
+            email: cleanupWhitespace(_email.text),
+            phone: cleanupWhitespace(_phone.text),
+            address: cleanupWhitespace(_address.text),
+            zipCode: cleanupWhitespace(_zipCode.text),
+            city: cleanupWhitespace(_city.text),
+            country: cleanupWhitespace(_country.text),
+            password: cleanupWhitespace(_password.text));
+
+        final authUser = await signUp(user);
+        print(authUser);
+        if (authUser.user != null && authUser.token != null) {
+          try {
+            setUserInLocalStorage(authUser.user!.id, authUser.token!);
+            ref.read(tokenProvider.notifier).setCurrentToken(authUser.token!);
+            ref.read(authProvider.notifier).setCurrentUser(authUser.user!);
+          } catch (e) {
+            print(e);
+          }
+
+          error.value = null;
+          showSuccessDialog(context);
+        } else if (authUser.errorMessage != null &&
+            authUser.errorMessage!.isNotEmpty) {
+          error.value = authUser.errorMessage;
+        } else {
+          error.value = "un problème est survenu, veuillez rééssayer";
+        }
+      }
+    }
+
     return Scaffold(
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(16),
@@ -57,25 +149,7 @@ class _RegisterState extends State<Register> {
             ),
             ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  try {
-                    // to do enter in the catch when the ressource is not created, : if the call response == false display error message, do the same in mektaba add page
-                    ApiService()
-                        .sendData(ApiService().createUserEndpoint, newUser);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      duration: Duration(seconds: 2),
-                      backgroundColor: Colors.green[800],
-                      content: Text("Inscription accompli avec succès."),
-                    ));
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      duration: Duration(seconds: 2),
-                      backgroundColor: Colors.red[800],
-                      content: Text("Erreur lors de l'inscription"),
-                    ));
-                  }
-                }
+                onSignUp();
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -115,52 +189,52 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               Form(
-                  key: _formKey,
+                  key: __signUpFormKey,
                   child: Container(
                     // height: _screenSize.height / 1.5,
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                                height: 50,
-                                width: 140,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                   title: const Text("Homme"),
-                                  leading: Radio<Gender>(
-                                    value: Gender.male,
-                                    groupValue: _gender,
-                                    onChanged: (Gender? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
-                                    },
-                                  ),
-                                )),
-                            Container(
-                                height: 50,
-                                width: 140,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(0),
-                                  title: const Text("Femme"),
-                                  leading: Radio<Gender>(
-                                    value: Gender.female,
-                                    groupValue: _gender,
-                                    onChanged: (Gender? value) {
-                                      setState(() {
-                                        _gender = value;
-                                      });
-                                    },
-                                  ),
-                                )),
-                          ],
-                        ),
+                        // Row(
+                        //   children: [
+                        //     Container(
+                        //         height: 50,
+                        //         width: 140,
+                        //         child: ListTile(
+                        //           contentPadding: EdgeInsets.all(0),
+                        //           title: const Text("Homme"),
+                        //           leading: Radio<Gender>(
+                        //             value: Gender.male,
+                        //             groupValue: _gender,
+                        //             onChanged: (Gender? value) {
+                        //               setState(() {
+                        //                 _gender = value;
+                        //               });
+                        //             },
+                        //           ),
+                        //         )),
+                        //     Container(
+                        //         height: 50,
+                        //         width: 140,
+                        //         child: ListTile(
+                        //           contentPadding: EdgeInsets.all(0),
+                        //           title: const Text("Femme"),
+                        //           leading: Radio<Gender>(
+                        //             value: Gender.female,
+                        //             groupValue: _gender,
+                        //             onChanged: (Gender? value) {
+                        //               setState(() {
+                        //                 _gender = value;
+                        //               });
+                        //             },
+                        //           ),
+                        //         )),
+                        //   ],
+                        // ),
 
                         TextFormField(
                           controller: _lastName,
                           decoration: const InputDecoration(hintText: "Nom"),
-                          style: TextStyle(fontSize: 20.0),
+                          //
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner un nom";
@@ -168,16 +242,10 @@ class _RegisterState extends State<Register> {
                               return "Le nom n'est pas correct";
                             }
                           },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["lastName"] = "$val";
-                            }
-                          },
                         ),
                         TextFormField(
                           controller: _firstName,
                           decoration: const InputDecoration(hintText: "Prénom"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner un prénom";
@@ -185,16 +253,10 @@ class _RegisterState extends State<Register> {
                               return "Le prénom n'est pas correct";
                             }
                           },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["firstName"] = "$val";
-                            }
-                          },
                         ),
                         TextFormField(
                           controller: _email,
                           decoration: const InputDecoration(hintText: "Email"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner un email";
@@ -202,27 +264,16 @@ class _RegisterState extends State<Register> {
                               return "L'email n'est pas correct";
                             }
                           },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["email"] = "$val";
-                            }
-                          },
                         ),
                         TextFormField(
                           controller: _phone,
                           decoration:
                               const InputDecoration(hintText: "Téléphone"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner un numéro de téléphone";
                             } else if (!isValidPhone(val)) {
                               return "Le numéro de téléphone n'est pas correct";
-                            }
-                          },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["phone"] = "$val";
                             }
                           },
                         ),
@@ -233,17 +284,11 @@ class _RegisterState extends State<Register> {
                           controller: _address,
                           decoration:
                               const InputDecoration(hintText: "Adresse"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner une addresse";
                             } else if (!isValidAddress(val)) {
                               return "L'addresse' n'est pas correct";
-                            }
-                          },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["address"] = "$val";
                             }
                           },
                         ),
@@ -256,17 +301,11 @@ class _RegisterState extends State<Register> {
                                 controller: _zipCode,
                                 decoration: const InputDecoration(
                                     hintText: "Code Postal"),
-                                style: TextStyle(fontSize: 20.0),
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
                                     return "Veuillez renseigner un code postal";
                                   } else if (!isValidZipCode(val)) {
                                     return "Le code postal n'est pas correct";
-                                  }
-                                },
-                                onSaved: (String? val) {
-                                  if (val != null) {
-                                    newUser["zipCode"] = "$val";
                                   }
                                 },
                               ),
@@ -277,17 +316,11 @@ class _RegisterState extends State<Register> {
                                 controller: _city,
                                 decoration:
                                     const InputDecoration(hintText: "Ville"),
-                                style: TextStyle(fontSize: 20.0),
                                 validator: (val) {
                                   if (val == null || val.isEmpty) {
                                     return "Veuillez renseigner une ville";
                                   } else if (!isValidName(val)) {
                                     return "La ville n'est pas correct";
-                                  }
-                                },
-                                onSaved: (String? val) {
-                                  if (val != null) {
-                                    newUser["city"] = "$val";
                                   }
                                 },
                               ),
@@ -297,17 +330,11 @@ class _RegisterState extends State<Register> {
                         TextFormField(
                           controller: _country,
                           decoration: const InputDecoration(hintText: "Pays"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner un Pays";
                             } else if (!isValidName(val)) {
                               return "La Pays n'est pas correct";
-                            }
-                          },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["country"] = "$val";
                             }
                           },
                         ),
@@ -318,17 +345,11 @@ class _RegisterState extends State<Register> {
                           controller: _password,
                           decoration: InputDecoration(
                               hintText: "Choisissez un mot de passe"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez renseigner un mot de passe";
                             } else if (!isValidPassword(val)) {
                               return passwordConditions;
-                            }
-                          },
-                          onSaved: (String? val) {
-                            if (val != null) {
-                              newUser["password"] = "$val";
                             }
                           },
                           obscureText: true,
@@ -341,7 +362,6 @@ class _RegisterState extends State<Register> {
                           controller: _confirmPassword,
                           decoration: const InputDecoration(
                               hintText: "Confirmez le mot de passe"),
-                          style: TextStyle(fontSize: 20.0),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
                               return "Veuillez confirmer le mot de passe";
@@ -356,58 +376,37 @@ class _RegisterState extends State<Register> {
                           keyboardType: TextInputType.text,
                           maxLength: 50,
                         ),
-
-                        // Expanded(
-                        // child:
-                        // Container(
-                        //   height: 50,
-                        //   color: Colors.blue,
-                        // ),
-                        // Align(
-                        //     alignment: Alignment.bottomCenter,
-                        //     child: Row(
-                        //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        //       children: [
-                        //         ElevatedButton(
-                        //           onPressed: () {
-                        //             Navigator.pop(context);
-                        //           },
-                        //           style: ElevatedButton.styleFrom(
-                        //             shape: RoundedRectangleBorder(
-                        //                 side: BorderSide(width: 1),
-                        //                 borderRadius: BorderRadius.circular(8)),
-                        //             padding: EdgeInsets.symmetric(
-                        //                 vertical: 8, horizontal: 32),
-                        //             foregroundColor: Colors.black,
-                        //             backgroundColor: Colors.white,
-                        //           ),
-                        //           child: const Text(
-                        //             "Annuler",
-                        //             style: TextStyle(
-                        //               fontSize: 18,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         ElevatedButton(
-                        //           onPressed: () {},
-                        //           style: ElevatedButton.styleFrom(
-                        //             shape: RoundedRectangleBorder(
-                        //                 borderRadius: BorderRadius.circular(8)),
-                        //             padding: EdgeInsets.symmetric(
-                        //                 vertical: 8, horizontal: 32),
-                        //             backgroundColor: Colors.black,
-                        //             foregroundColor: Colors.white,
-                        //           ),
-                        //           child: const Text(
-                        //             "S'inscrire",
-                        //             style: TextStyle(
-                        //               fontSize: 18,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     )),
-                        // ),
+                        Visibility(
+                          visible:
+                              error.value != null && error.value!.isNotEmpty,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 15),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFFDEDED),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(Icons.error),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Center(
+                                  child: Text(
+                                    error.value.toString(),
+                                    style: const TextStyle(
+                                      color: Color(0xFF5F2120),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )),
