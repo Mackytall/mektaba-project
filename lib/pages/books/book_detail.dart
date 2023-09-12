@@ -114,7 +114,8 @@ class _BookDetailState extends State<BookDetail>
                                         color: Color(0xFFD88513),
                                       ),
                                     ),
-                                  )
+                                  ),
+                                  Text(widget.stock.status)
                                 ],
                               ),
                               ElevatedButton(

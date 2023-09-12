@@ -60,11 +60,45 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _searchController = TextEditingController();
   late Future<dynamic> futureStocks;
   late List<dynamic> stocks = [];
+  var uniqueBooksId = [];
+
+  void filterStocks() async {
+    final allStocks = await getStocksByMektaba("64d5e04a0d0ecda58e0678aa");
+    Map<String, List<StockWithBookDet>> stocksByBookId = {};
+    for (var stock in allStocks) {
+      if (!stocksByBookId.containsKey(stock.book.id)) {
+        stocksByBookId[stock.book.id] = [];
+      }
+      stocksByBookId[stock.book.id]!.add(stock);
+    }
+
+    for (var key in stocksByBookId.keys) {
+      var values = stocksByBookId[key]!;
+      var selectedStock = values.firstWhere(
+        (stock) => stock.status == "available",
+        orElse: () => values.firstWhere(
+          (stock) => stock.status == "reserved",
+          orElse: () => values.firstWhere(
+            (stock) => stock.status == "loan",
+          ),
+        ),
+      );
+
+      if (selectedStock != null) {
+        stocks.add(selectedStock);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    futureStocks = ApiService().apiCall(
-        ApiService().stocksWithBookDetail, StockWithBookDetail.fromJson);
+    filterStocks();
+    // to remove when developping new books section
+    futureStocks = getStocksByMektaba("64d5e04a0d0ecda58e0678aa");
+
+    // ApiService().apiCall(
+    //     ApiService().stocksWithBookDetail, StockWithBookDetail.fromJson);
   }
 
   @override
@@ -436,19 +470,29 @@ class _MyHomePageState extends State<MyHomePage> {
                           // the following code will
                           // loop over stocks from api call and saves books id in list.
                           //this will allow us to only display one copy of a book
-                          var uniqueBooksId = [];
-                          for (var stock in snapshot.data!) {
-                            var bookId = stock.book.id;
-                            if (uniqueBooksId.length == 0) {
-                              uniqueBooksId.add(bookId);
-                              stocks.add(stock);
-                            } else {
-                              if (uniqueBooksId.contains(bookId) == false) {
-                                uniqueBooksId.add(bookId);
-                                stocks.add(stock);
-                              }
-                            }
-                          }
+
+                          // for (var stock in snapshot.data!) {
+                          //   var bookId = stock.book.id;
+                          //   if (uniqueBooksId.length == 0) {
+                          //     uniqueBooksId.add(bookId);
+                          //     stocks.add(stock);
+                          //   } else {
+                          //     if (uniqueBooksId.contains(bookId) == false) {
+                          //       uniqueBooksId.add(bookId);
+                          //       stocks.add(stock);
+                          //     }
+                          //   }
+                          // }
+
+                          // for (var stock in snapshot.data!) {
+                          //   if (uniqueBooksId.contains(stock.book.id) ==
+                          //       false) {
+                          //     uniqueBooksId.add(stock.book.id);
+                          //   }
+                          // }
+                          // for (var stock in snapshot.data!) {
+
+                          // }
                           return Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height / 3,
