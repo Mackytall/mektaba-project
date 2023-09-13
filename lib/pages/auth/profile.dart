@@ -1,19 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:test/models/user.dart';
+import 'package:test/providers/providers.dart';
 import 'package:test/widget/app_bar_builder.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class Profile extends StatefulWidget {
+class Profile extends HookConsumerWidget {
+  Profile({super.key});
+
   @override
-  State<StatefulWidget> createState() => _ProfileState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dynamic user = ref.watch(authProvider);
 
-enum Gender { male, female }
-
-class _ProfileState extends State<Profile> {
-  final _formKey = GlobalKey<FormState>();
-  Gender? _gender = Gender.male;
-  @override
-  Widget build(BuildContext context) {
     Size _screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBarBuilder(),
@@ -49,9 +47,15 @@ class _ProfileState extends State<Profile> {
                           const Text("Bonjour",
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.w600)),
-                          const Text("Aberazzak",
-                              style: TextStyle(
-                                  fontSize: 26, fontWeight: FontWeight.w600)),
+                          user == null
+                              ? Text("Invité",
+                                  style: TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w600))
+                              : Text("${user.firstName}",
+                                  style: TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w600)),
                           const Text("Dernière connexion : 20.01.2021",
                               style: TextStyle(fontSize: 12)),
                         ]),
@@ -268,139 +272,141 @@ class _ProfileState extends State<Profile> {
               ),
               const Divider(),
               SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child:
-              
-              Row(
-                children: [
-                  Container(
-                      margin: EdgeInsets.only(right: 8),
-                      child: Card(
-                        child: Container(
-                            padding: EdgeInsets.all(2),
-                            height: _screenSize.height / 10,
-                            width: _screenSize.width / 5,
-                            child: Column(
-                            children: [
-                              Text("3",
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(
-                                width: 5,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: Card(
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              height: _screenSize.height / 10,
+                              width: _screenSize.width / 5,
+                              child: Column(
+                                children: [
+                                  Text("3",
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("Nouvelles adhésions",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ))
+                                ],
                               ),
-                              Text("Nouvelles adhésions",
-                              textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                  ))
-                            ],
-                          ),),
-                      )),
-                  Container(
-                      margin: EdgeInsets.only(right: 8),
-                      child: Card(
-                        child: Container(
-                            padding: EdgeInsets.all(2),
-                            height: _screenSize.height / 10,
-                            width: _screenSize.width / 5,
-                            child: Column(
-                            children: [
-                              Text("15000",
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(
-                                width: 5,
+                            ),
+                          )),
+                      Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: Card(
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              height: _screenSize.height / 10,
+                              width: _screenSize.width / 5,
+                              child: Column(
+                                children: [
+                                  Text("15000",
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("Ouvrages disponibles",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ))
+                                ],
                               ),
-                              Text("Ouvrages disponibles",
-                              textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                  ))
-                            ],
-                          ),),
-                      )),
-                  Container(
-                      margin: EdgeInsets.only(right: 8),
-                      child: Card(
-                        child: Container(
-                            padding: EdgeInsets.all(2),
-                            height: _screenSize.height / 10,
-                            width: _screenSize.width / 5,
-                            child: Column(
-                            children: [
-                              Text("150",
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(
-                                width: 5,
+                            ),
+                          )),
+                      Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: Card(
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              height: _screenSize.height / 10,
+                              width: _screenSize.width / 5,
+                              child: Column(
+                                children: [
+                                  Text("150",
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("Prêt en cours",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ))
+                                ],
                               ),
-                              Text("Prêt en cours",
-                              textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                  ))
-                            ],
-                          ),),
-                      )),
-                       Container(
-                      margin: EdgeInsets.only(right: 8),
-                      child: Card(
-                        child: Container(
-                            padding: EdgeInsets.all(2),
-                            height: _screenSize.height / 10,
-                            width: _screenSize.width / 5,
-                            child: Column(
-                            children: [
-                              Text("12",
-                                  style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(
-                                width: 5,
+                            ),
+                          )),
+                      Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: Card(
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              height: _screenSize.height / 10,
+                              width: _screenSize.width / 5,
+                              child: Column(
+                                children: [
+                                  Text("12",
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("Réservations",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ))
+                                ],
                               ),
-                              Text("Réservations",
-                              textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                  ))
-                            ],
-                          ),),
-                      )),
-                       Container(
-                      margin: EdgeInsets.only(right: 8),
-                      child: Card(
-                        child: Container(
-                            padding: EdgeInsets.all(2),
-                            height: _screenSize.height / 10,
-                            width: _screenSize.width / 5,
-                            child: Column(
-                            children: [
-                              Text("18",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(
-                                width: 5,
+                            ),
+                          )),
+                      Container(
+                          margin: EdgeInsets.only(right: 8),
+                          child: Card(
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              height: _screenSize.height / 10,
+                              width: _screenSize.width / 5,
+                              child: Column(
+                                children: [
+                                  Text("18",
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text("Retards",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                      ))
+                                ],
                               ),
-                              Text("Retards",
-                              textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                  ))
-                            ],
-                          ),),
-                      )),
-                ],
-              )
-              ),
+                            ),
+                          )),
+                    ],
+                  )),
               const SizedBox(
                 height: 20,
               ),
@@ -465,7 +471,7 @@ class _ProfileState extends State<Profile> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                               Icon(
+                                Icon(
                                   Icons.add_business,
                                   size: 26,
                                 ),
@@ -543,7 +549,7 @@ class _ProfileState extends State<Profile> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                               Icon(
+                                Icon(
                                   Icons.event_available,
                                   size: 26,
                                 ),
