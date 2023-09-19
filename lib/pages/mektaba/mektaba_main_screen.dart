@@ -129,9 +129,9 @@ class MyHomePage extends HookConsumerWidget {
     final membershipStatus = useState<String?>(null);
     final membershipText = useState<String?>("Demande d'adhésion");
     // final membershipText =
-    // useState<String?>("Adhésion en attente d'approbation");
+    //     useState<String?>("Adhésion en attente d'approbation");
     final membershipTextColor = useState<Color?>(Colors.black);
-    final membershipBackgroundColor = useState<Color?>(Colors.white);
+    final membershipBackgroundColor = useState<Color?>(null);
     final dynamic user = ref.watch(authProvider);
     bool isUserMember = false;
     bool isUserApprovedMember = false;
@@ -213,7 +213,7 @@ class MyHomePage extends HookConsumerWidget {
         membershipStatus.value = subcribeRes.status;
         membershipText.value = subcribeRes.message;
         membershipTextColor.value = Colors.black;
-        membershipBackgroundColor.value = Colors.white;
+        membershipBackgroundColor.value = null;
         isUserApprovedMember = false;
         isUserMember = false;
         Navigator.of(context).pop();
@@ -301,10 +301,7 @@ class MyHomePage extends HookConsumerWidget {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(
-                          left: 16,
-                          top: 16,
-                        ),
+                        padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
                         elevation: 3,
                         maximumSize: Size(
                             MediaQuery.of(context).size.width / 2.2,
@@ -312,7 +309,7 @@ class MyHomePage extends HookConsumerWidget {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white,
-                        backgroundColor: Colors.white),
+                        backgroundColor: null),
                     onPressed: () {},
                     child: Row(
                       children: [
@@ -321,7 +318,7 @@ class MyHomePage extends HookConsumerWidget {
                           width: 8,
                         ),
                         SizedBox(
-                            height: MediaQuery.of(context).size.height / 15,
+                            height: MediaQuery.of(context).size.height / 18,
                             width: MediaQuery.of(context).size.width / 4.5,
                             child: Text('Ajouter en favoris',
                                 style: TextStyle(
@@ -332,10 +329,7 @@ class MyHomePage extends HookConsumerWidget {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(
-                          left: 16,
-                          top: 16,
-                        ),
+                        padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
                         elevation: 3,
                         maximumSize: Size(
                             MediaQuery.of(context).size.width / 2.2,
@@ -353,7 +347,6 @@ class MyHomePage extends HookConsumerWidget {
                           showConfirmationDialog(context, onCancel);
                         } else {
                           onSubscribe();
-                          // subscribeUser(mektabaId, user.id);
                         }
                       } else {
                         Navigator.push(
@@ -375,7 +368,7 @@ class MyHomePage extends HookConsumerWidget {
                           width: 8,
                         ),
                         Container(
-                            height: MediaQuery.of(context).size.height / 15,
+                            height: MediaQuery.of(context).size.height / 18,
                             width: MediaQuery.of(context).size.width / 3.2,
                             child: AutoSizeText(membershipText.value.toString(),
                                 style: TextStyle(
