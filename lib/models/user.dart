@@ -120,7 +120,6 @@ Future<List<User>> getUsers() async {
 
         return result;
       } else {
-        // Si les données sont manquantes ou nulles, retournez une liste vide
         return [];
       }
     } else {

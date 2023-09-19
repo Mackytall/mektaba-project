@@ -29,19 +29,19 @@ class Login extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final error = useState<String?>(null);
     final user = ref.watch(authProvider);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (user != null && !goBackAfterLogin) {
-        // navigate to profile page
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Profile()),
-        );
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (user != null && !goBackAfterLogin) {
+    //     // navigate to profile page
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => Profile()),
+    //     );
+    //   }
+    // });
 
     void redirect() {
       if (goBackAfterLogin) {
-        Navigator.of(context).pop;
+        Navigator.of(context).pop();
       } else {
         Navigator.push(
           context,

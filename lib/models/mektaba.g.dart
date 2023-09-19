@@ -40,6 +40,9 @@ Mektaba _$MektabaFromJson(Map<String, dynamic> json) => Mektaba(
       employees: (json['employees'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      members: (json['members'] as List<dynamic>?)
+          ?.map((e) => Member.fromJson(e as Map<String, dynamic>))
+          .toList(),
       owner: json['owner'] as String,
       isEnabled: json['isEnabled'] as bool? ?? false,
       website: json['website'] as String?,
@@ -78,6 +81,7 @@ Map<String, dynamic> _$MektabaToJson(Mektaba instance) => <String, dynamic>{
       'canPray': instance.canPray,
       'canTakeCourses': instance.canTakeCourses,
       'employees': instance.employees,
+      'members': instance.members?.map((e) => e.toJson()).toList(),
       'owner': instance.owner,
       'isEnabled': instance.isEnabled,
       'website': instance.website,
@@ -91,3 +95,24 @@ const _$TimeUnitsEnumMap = {
   TimeUnits.month: 'month',
   TimeUnits.year: 'year',
 };
+
+Member _$MemberFromJson(Map<String, dynamic> json) => Member(
+      user: json['user'] as String,
+      status: json['status'] as String,
+      requestDate: json['requestDate'] as String,
+    );
+
+Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
+      'user': instance.user,
+      'status': instance.status,
+      'requestDate': instance.requestDate,
+    };
+
+SubscribeReq _$SubscribeReqFromJson(Map<String, dynamic> json) => SubscribeReq(
+      user: json['user'] as String,
+    );
+
+Map<String, dynamic> _$SubscribeReqToJson(SubscribeReq instance) =>
+    <String, dynamic>{
+      'user': instance.user,
+    };

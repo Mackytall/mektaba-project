@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test/models/stock.dart';
+import 'package:test/models/mektaba.dart';
 import 'package:test/models/stockWithBookDetail.dart';
 import 'package:test/pages/auth/sign_up.dart';
 import 'package:test/pages/books/book_consultation.dart';
@@ -12,6 +13,7 @@ import 'package:test/pages/mektaba/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/pages/mektaba/mektaba_owner/member/list_of_mektaba.dart';
 import 'package:test/pages/membership/member_validation.dart';
 import 'package:test/pages/auth/profile.dart';
+import 'package:test/providers/providers.dart';
 import 'package:test/services/ApiService.dart';
 import 'package:test/pages/splash_screen.dart';
 import 'package:test/utils/utils.dart';
@@ -19,6 +21,9 @@ import 'package:test/widget/app_bar_builder.dart';
 import '../../../data/mektaba_data.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../../../../config/palette.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MektabaMainScreen extends StatelessWidget {
   const MektabaMainScreen({super.key});
@@ -47,62 +52,179 @@ class MektabaMainScreen extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-  });
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends HookConsumerWidget {
+  MyHomePage({super.key});
   final TextEditingController _searchController = TextEditingController();
-  late Future<dynamic> futureStocks;
+  // late Future<dynamic> futureStocks;
   late List<dynamic> stocks = [];
-  var uniqueBooksId = [];
+  bool isStocksFiltered = false;
+  showConfirmationDialog(BuildContext context, void Function()? onCancel) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return Align(
+            alignment: Alignment.center,
+            child: AlertDialog(
+                content: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Êtes-vous sûr de vouloir annuler votre demande d'adhésion ?",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Non",
+                          style: TextStyle(color: Palette.quaternary))),
+                  TextButton(
+                      onPressed: () {
+                        onCancel!();
+                      },
+                      child: Text("Oui")),
+                ]));
+      },
+    );
+  }
 
   void filterStocks() async {
-    final allStocks = await getStocksByMektaba("64d5e04a0d0ecda58e0678aa");
-    Map<String, List<StockWithBookDet>> stocksByBookId = {};
-    for (var stock in allStocks) {
-      if (!stocksByBookId.containsKey(stock.book.id)) {
-        stocksByBookId[stock.book.id] = [];
+    if (!isStocksFiltered) {
+      isStocksFiltered = true;
+      final allStocks = await getStocksByMektaba("64d5e04a0d0ecda58e0678aa");
+      Map<String, List<StockWithBookDet>> stocksByBookId = {};
+      for (var stock in allStocks) {
+        if (!stocksByBookId.containsKey(stock.book.id)) {
+          stocksByBookId[stock.book.id] = [];
+        }
+        stocksByBookId[stock.book.id]!.add(stock);
       }
-      stocksByBookId[stock.book.id]!.add(stock);
-    }
 
-    for (var key in stocksByBookId.keys) {
-      var values = stocksByBookId[key]!;
-      var selectedStock = values.firstWhere(
-        (stock) => stock.status == "available",
-        orElse: () => values.firstWhere(
-          (stock) => stock.status == "reserved",
+      for (var key in stocksByBookId.keys) {
+        var values = stocksByBookId[key]!;
+        var selectedStock = values.firstWhere(
+          (stock) => stock.status == "available",
           orElse: () => values.firstWhere(
-            (stock) => stock.status == "loan",
+            (stock) => stock.status == "reserved",
+            orElse: () => values.firstWhere(
+              (stock) => stock.status == "loan",
+            ),
           ),
-        ),
-      );
+        );
 
-      if (selectedStock != null) {
-        stocks.add(selectedStock);
+        if (selectedStock != null) {
+          stocks.add(selectedStock);
+        }
       }
     }
   }
 
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final error = useState<String?>(null);
+    final membershipStatus = useState<String?>(null);
+    final membershipText = useState<String?>("Demande d'adhésion");
+    // final membershipText =
+    // useState<String?>("Adhésion en attente d'approbation");
+    final membershipTextColor = useState<Color?>(Colors.black);
+    final membershipBackgroundColor = useState<Color?>(Colors.white);
+    final dynamic user = ref.watch(authProvider);
+    bool isUserMember = false;
+    bool isUserApprovedMember = false;
     filterStocks();
-    // to remove when developping new books section
-    futureStocks = getStocksByMektaba("64d5e04a0d0ecda58e0678aa");
+    final mektabaId = "64e4b49644aa4f0ec6c48cc3";
+    // final mektabaId = "65057e681cbe4e353b0f93c8"; // on local
+    final futureStocks = getStocksByMektaba(mektabaId);
+    Future<MektabaRes> futureMektaba = getMektaba(mektabaId);
 
-    // ApiService().apiCall(
-    //     ApiService().stocksWithBookDetail, StockWithBookDetail.fromJson);
-  }
+    getMembershipStatus(userId) {
+      Mektaba? mektaba;
+      futureMektaba.then((data) {
+        mektaba = data.mektaba;
+        List<Member>? members = mektaba?.members;
+        if (members == null) {
+          isUserApprovedMember = false;
+          return false;
+        }
+        isUserApprovedMember = false;
+        isUserMember = false;
+        for (Member member in members) {
+          if (member.user == userId) {
+            if (member.status == "approved") {
+              isUserApprovedMember = true;
+              isUserMember = true;
+              membershipStatus.value = "approved";
+              membershipText.value = "Adhérent";
+              membershipTextColor.value = Colors.white;
+              membershipBackgroundColor.value = Palette.secondary;
+            } else if (member.status == "pending") {
+              membershipStatus.value = "pending";
+              membershipText.value = "Adhésion en attente d'approbation";
+              membershipTextColor.value = Colors.white;
+              membershipBackgroundColor.value = Palette.tertiary;
+              isUserApprovedMember = false;
+              isUserMember = true;
+            } else if (member.status == "refused") {
+              isUserApprovedMember = false;
+              isUserMember = true;
+              membershipStatus.value = "refused";
+              membershipText.value = "Adhésion refusé";
+              membershipTextColor.value = Colors.white;
+              membershipBackgroundColor.value = Palette.quaternary;
+            }
+          }
+        }
+      });
+    }
 
-  @override
-  Widget build(BuildContext context) {
+    if (user != null) {
+      getMembershipStatus(user.id);
+    }
+
+    void onSubscribe() async {
+      String userId = user.id;
+      print(userId);
+      print(mektabaId);
+      final subcribeRes = await subscribe(mektabaId, userId);
+      if (subcribeRes.status != null) {
+        membershipStatus.value = subcribeRes.status;
+        membershipText.value = subcribeRes.message;
+        membershipTextColor.value = Colors.white;
+        membershipBackgroundColor.value = Palette.tertiary;
+        isUserApprovedMember = false;
+        isUserMember = true;
+      } else if (subcribeRes.error != null) {
+        error.value = subcribeRes.error;
+        print(error.value);
+      } else {
+        error.value = "Un problème est survenu, veuillez réessayer";
+      }
+    }
+
+    void onCancel() async {
+      String userId = user.id;
+      final subcribeRes = await cancelMembershipRequest(mektabaId, userId);
+      print(subcribeRes);
+      if (subcribeRes.success == true) {
+        membershipStatus.value = subcribeRes.status;
+        membershipText.value = subcribeRes.message;
+        membershipTextColor.value = Colors.black;
+        membershipBackgroundColor.value = Colors.white;
+        isUserApprovedMember = false;
+        isUserMember = false;
+        Navigator.of(context).pop();
+      } else if (subcribeRes.error != null) {
+        error.value = subcribeRes.error;
+        print(error.value);
+      } else {
+        error.value = "Un problème est survenu, veuillez réessayer";
+      }
+    }
+
     return Scaffold(
       appBar: AppBarBuilder(goBackIcon: false, actionIcon: false),
       body: SingleChildScrollView(
@@ -179,23 +301,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          top: 16,
+                        ),
                         elevation: 3,
                         maximumSize: Size(
                             MediaQuery.of(context).size.width / 2.2,
                             MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        surfaceTintColor: Colors.white),
+                        surfaceTintColor: Colors.white,
+                        backgroundColor: Colors.white),
                     onPressed: () {},
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.favorite,
-                        ),
+                        Icon(Icons.favorite, color: Palette.secondary),
                         SizedBox(
                           width: 8,
                         ),
                         SizedBox(
+                            height: MediaQuery.of(context).size.height / 15,
                             width: MediaQuery.of(context).size.width / 4.5,
                             child: Text('Ajouter en favoris',
                                 style: TextStyle(
@@ -206,32 +332,58 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          top: 16,
+                        ),
                         elevation: 3,
                         maximumSize: Size(
                             MediaQuery.of(context).size.width / 2.2,
                             MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        surfaceTintColor: Colors.white),
+                        surfaceTintColor: Colors.white,
+                        backgroundColor: membershipBackgroundColor.value),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Login()),
-                      );
+                      if (user != null) {
+                        if (membershipStatus.value == "approved" ||
+                            membershipStatus.value == "refused") {
+                          () {};
+                        } else if (membershipStatus.value == "pending") {
+                          showConfirmationDialog(context, onCancel);
+                        } else {
+                          onSubscribe();
+                          // subscribeUser(mektabaId, user.id);
+                        }
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Login(
+                                    goBackAfterLogin: true,
+                                  )),
+                        );
+                      }
                     },
                     child: Row(
                       children: [
-                        Icon(Icons.person_add),
+                        Icon(Icons.person_add,
+                            color: membershipTextColor.value == Colors.white
+                                ? Colors.white
+                                : Palette.secondary),
                         SizedBox(
                           width: 8,
                         ),
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width / 4.5,
-                            child: AutoSizeText('Demande d’adhésion',
-                                style: TextStyle(color: Colors.black))),
+                        Container(
+                            height: MediaQuery.of(context).size.height / 15,
+                            width: MediaQuery.of(context).size.width / 3.2,
+                            child: AutoSizeText(membershipText.value.toString(),
+                                style: TextStyle(
+                                  color: membershipTextColor.value,
+                                ))),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
               // ),
