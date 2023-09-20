@@ -301,7 +301,7 @@ class MyHomePage extends HookConsumerWidget {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                        // padding: EdgeInsets.only(left: 16, bottom: 8, top: 2),
                         elevation: 3,
                         maximumSize: Size(
                             MediaQuery.of(context).size.width / 2.2,
@@ -312,15 +312,17 @@ class MyHomePage extends HookConsumerWidget {
                         backgroundColor: null),
                     onPressed: () {},
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.favorite, color: Palette.secondary),
                         SizedBox(
                           width: 8,
                         ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height / 18,
+                        Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width / 4.5,
-                            child: Text('Ajouter en favoris',
+                            child: AutoSizeText('Ajouter en favoris',
                                 style: TextStyle(
                                   color: Colors.black,
                                 ))),
@@ -329,7 +331,8 @@ class MyHomePage extends HookConsumerWidget {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                        // padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                        padding: EdgeInsets.only(left: 16, bottom: 8, top: 2),
                         elevation: 3,
                         maximumSize: Size(
                             MediaQuery.of(context).size.width / 2.2,
@@ -368,7 +371,8 @@ class MyHomePage extends HookConsumerWidget {
                           width: 8,
                         ),
                         Container(
-                            height: MediaQuery.of(context).size.height / 18,
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width / 3.2,
                             child: AutoSizeText(membershipText.value.toString(),
                                 style: TextStyle(
