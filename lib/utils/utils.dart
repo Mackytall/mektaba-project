@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:test/config/palette.dart';
+import 'package:test/models/stock.dart';
 
 String cleanupWhitespace(String input) {
   final whitespaceRE = RegExp(r"(?! )\s+| \s+");
@@ -49,5 +51,34 @@ Future openMapsSheet(context, address, name) async {
     );
   } catch (e) {
     print("Erreur lors de l'ouverture de l'application de cartes : $e");
+  }
+}
+
+Text labelizeStockStatus(StockStatus status) {
+  switch (status) {
+    case StockStatus.available:
+      return Text(
+        "Disponible".toUpperCase(),
+        style: const TextStyle(
+          color: Palette.secondary,
+        ),
+      );
+    case StockStatus.reserved:
+      return Text(
+        "Réservé".toUpperCase(),
+        style: const TextStyle(
+          color: Palette.quaternary,
+        ),
+      );
+
+    case StockStatus.loan:
+      return Text(
+        "En prêt".toUpperCase(),
+        style: const TextStyle(
+          color: Color(0xFFD88513),
+        ),
+      );
+    default:
+      return Text("");
   }
 }

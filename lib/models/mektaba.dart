@@ -184,9 +184,8 @@ class SubscribeReq {
   Map<String, dynamic> toJson() => _$SubscribeReqToJson(this);
 }
 
-Future subscribe(String mektabaId, String userId) async {
+Future<SubscribeRes> subscribe(String mektabaId, String userId) async {
   try {
-    print("$mektabaUrl/$mektabaId/members");
     final response = await http.put(Uri.parse("$mektabaUrl/$mektabaId/members"),
         // headers: getAuthHeaders(token)
         headers: getHeaders(),
@@ -194,15 +193,15 @@ Future subscribe(String mektabaId, String userId) async {
           'user': userId,
         }));
     final parsed = json.decode(response.body);
+    print(parsed);
     if (response.statusCode == 200) {
-      print(parsed);
       return SubscribeRes(status: parsed['status'], message: parsed["message"]);
     } else {
-      return SubscribeRes(error: parsed["error"]);
+      return SubscribeRes(error: parsed["error"], message: parsed['message']);
     }
   } catch (e) {
     if (kDebugMode) {
-      print(e);
+      print("Error in subscription for membership : $e ");
     }
     throw Exception("Failed to subscribe user");
   }

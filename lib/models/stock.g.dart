@@ -13,7 +13,7 @@ Stock _$StockFromJson(Map<String, dynamic> json) => Stock(
       book: json['book'] as String,
       mektaba: json['mektaba'] as String,
       onlyOnSiteConsultation: json['onlyOnSiteConsultation'] as bool,
-      status: json['status'] as String,
+      status: $enumDecode(_$StockStatusEnumMap, json['status']),
       createdBy: json['createdBy'] as String,
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
@@ -29,7 +29,7 @@ Map<String, dynamic> _$StockToJson(Stock instance) => <String, dynamic>{
       'book': instance.book,
       'mektaba': instance.mektaba,
       'onlyOnSiteConsultation': instance.onlyOnSiteConsultation,
-      'status': instance.status,
+      'status': _$StockStatusEnumMap[instance.status]!,
       'createdBy': instance.createdBy,
       'updatedBy': instance.updatedBy,
       'deletedBy': instance.deletedBy,
@@ -37,6 +37,14 @@ Map<String, dynamic> _$StockToJson(Stock instance) => <String, dynamic>{
       'updatedAt': instance.updatedAt,
       'deletedAt': instance.deletedAt,
     };
+
+const _$StockStatusEnumMap = {
+  StockStatus.loan: 'loan',
+  StockStatus.available: 'available',
+  StockStatus.reserved: 'reserved',
+  StockStatus.deleted: 'deleted',
+  StockStatus.draft: 'draft',
+};
 
 StockWithBookDet _$StockWithBookDetFromJson(Map<String, dynamic> json) =>
     StockWithBookDet(
@@ -46,7 +54,7 @@ StockWithBookDet _$StockWithBookDetFromJson(Map<String, dynamic> json) =>
       book: Book.fromJson(json['book'] as Map<String, dynamic>),
       mektaba: json['mektaba'] as String,
       onlyOnSiteConsultation: json['onlyOnSiteConsultation'] as bool,
-      status: json['status'] as String,
+      status: $enumDecode(_$StockStatusEnumMap, json['status']),
       createdBy: json['createdBy'] as String,
       createdAt: json['createdAt'] as String,
       updatedAt: json['updatedAt'] as String,
@@ -63,7 +71,7 @@ Map<String, dynamic> _$StockWithBookDetToJson(StockWithBookDet instance) =>
       'book': instance.book.toJson(),
       'mektaba': instance.mektaba,
       'onlyOnSiteConsultation': instance.onlyOnSiteConsultation,
-      'status': instance.status,
+      'status': _$StockStatusEnumMap[instance.status]!,
       'createdBy': instance.createdBy,
       'updatedBy': instance.updatedBy,
       'deletedBy': instance.deletedBy,

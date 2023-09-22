@@ -7,8 +7,6 @@ import 'package:http/http.dart' as http;
 
 part 'stock.g.dart';
 
-enum StockStatus { loan, available, reserved, deleted }
-
 // extension StockStatusExtension on StockStatus {
 //   String get value {
 //     switch (this) {
@@ -34,6 +32,7 @@ enum StockStatus { loan, available, reserved, deleted }
 //     }
 //   }
 // }
+enum StockStatus { loan, available, reserved, deleted, draft }
 
 @JsonSerializable(explicitToJson: true)
 class Stock {
@@ -44,7 +43,7 @@ class Stock {
   String book;
   String mektaba;
   bool onlyOnSiteConsultation;
-  String status;
+  StockStatus status;
   String createdBy;
   String? updatedBy;
   String? deletedBy;
@@ -85,7 +84,7 @@ class StockWithBookDet {
   Book book;
   String mektaba;
   bool onlyOnSiteConsultation;
-  String status;
+  StockStatus status;
   String createdBy;
   String? updatedBy;
   String? deletedBy;
@@ -118,27 +117,28 @@ class StockWithBookDet {
   Map<String, dynamic> toJson() => _$StockWithBookDetToJson(this);
 }
 
-final stocksCache =
-    AsyncCache<List<StockWithBookDet>>(const Duration(seconds: 30));
+// final stocksCache =
+//     AsyncCache<List<StockWithBookDet>>(const Duration(seconds: 30));
 Future<List<StockWithBookDet>> getStocksByMektaba(String mektabaId) async {
-  return stocksCache.fetch(() async {
-    const stocksUrl = "https://mektaba.imadelmahrad.com/api/mektaba/stocks";
-    try {
-      final response =
-          await http.get(Uri.parse("$stocksUrl/mektaba/$mektabaId/true"));
-      if (response.statusCode == 200) {
-        final parsed = json.decode(response.body);
-        final res = (parsed['stocks'] as List)
-            .map((i) => StockWithBookDet.fromJson(i))
-            .toList();
-        return res;
-      }
-      return List.empty();
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      throw Exception('Failed to load stocks');
+  // return stocksCache.fetch(() async {
+  const stocksUrl = "https://mektaba.imadelmahrad.com/api/mektaba/stocks";
+  try {
+    final response =
+        await http.get(Uri.parse("$stocksUrl/mektaba/$mektabaId/true"));
+    if (response.statusCode == 200) {
+      final parsed = json.decode(response.body);
+      final res = (parsed['stocks'] as List)
+          .map((i) => StockWithBookDet.fromJson(i))
+          .toList();
+      return res;
     }
-  });
+    return List.empty();
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+    throw Exception('Failed to load stocks');
+  }
+  // }
+  // );
 }

@@ -23,7 +23,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../../../../config/palette.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MektabaMainScreen extends StatelessWidget {
   const MektabaMainScreen({super.key});
@@ -107,15 +106,14 @@ class MyHomePage extends HookConsumerWidget {
       for (var key in stocksByBookId.keys) {
         var values = stocksByBookId[key]!;
         var selectedStock = values.firstWhere(
-          (stock) => stock.status == "available",
+          (stock) => stock.status == StockStatus.available,
           orElse: () => values.firstWhere(
-            (stock) => stock.status == "reserved",
+            (stock) => stock.status == StockStatus.reserved,
             orElse: () => values.firstWhere(
-              (stock) => stock.status == "loan",
+              (stock) => stock.status == StockStatus.loan,
             ),
           ),
         );
-
         if (selectedStock != null) {
           stocks.add(selectedStock);
         }
@@ -136,7 +134,7 @@ class MyHomePage extends HookConsumerWidget {
     bool isUserMember = false;
     bool isUserApprovedMember = false;
     filterStocks();
-    final mektabaId = "64e4b49644aa4f0ec6c48cc3";
+    final mektabaId = "650d4ce3f9250a9b6fed6765";
     // final mektabaId = "65057e681cbe4e353b0f93c8"; // on local
     final futureStocks = getStocksByMektaba(mektabaId);
     Future<MektabaRes> futureMektaba = getMektaba(mektabaId);
@@ -148,6 +146,7 @@ class MyHomePage extends HookConsumerWidget {
         List<Member>? members = mektaba?.members;
         if (members == null) {
           isUserApprovedMember = false;
+          isUserMember = false;
           return false;
         }
         isUserApprovedMember = false;
@@ -187,18 +186,23 @@ class MyHomePage extends HookConsumerWidget {
 
     void onSubscribe() async {
       String userId = user.id;
-      print(userId);
-      print(mektabaId);
       final subcribeRes = await subscribe(mektabaId, userId);
+      print("subcribeRes.status");
+      print(subcribeRes.status);
       if (subcribeRes.status != null) {
+        print("subcribeRes.status != null");
+        print(subcribeRes.status);
         membershipStatus.value = subcribeRes.status;
         membershipText.value = subcribeRes.message;
         membershipTextColor.value = Colors.white;
         membershipBackgroundColor.value = Palette.tertiary;
         isUserApprovedMember = false;
         isUserMember = true;
-      } else if (subcribeRes.error != null) {
+      } else if (subcribeRes.error != null || subcribeRes.message != null) {
         error.value = subcribeRes.error;
+        print(error.value);
+      } else if (subcribeRes.message != null) {
+        error.value = subcribeRes.message;
         print(error.value);
       } else {
         error.value = "Un problème est survenu, veuillez réessayer";
@@ -345,10 +349,16 @@ class MyHomePage extends HookConsumerWidget {
                       if (user != null) {
                         if (membershipStatus.value == "approved" ||
                             membershipStatus.value == "refused") {
+                          print(
+                              "membershipStatus.value == approved | approved)");
+
                           () {};
                         } else if (membershipStatus.value == "pending") {
+                          print("membershipStatus.value == pending)");
+
                           showConfirmationDialog(context, onCancel);
-                        } else {
+                        } else if (membershipStatus.value == null) {
+                          print("membershipStatus.value == null)");
                           onSubscribe();
                         }
                       } else {
@@ -426,7 +436,8 @@ class MyHomePage extends HookConsumerWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => BookConsultation(
-                                    stocks: stocks,
+                                    // stocks: stocks,
+                                    mektabaId: mektabaId,
                                   )),
                         );
                       },
@@ -661,6 +672,7 @@ class MyHomePage extends HookConsumerWidget {
                                           MaterialPageRoute(
                                               builder: (context) => BookDetail(
                                                     stock: stocks[index],
+                                                    mektabaId: mektabaId,
                                                   )),
                                         );
                                       },

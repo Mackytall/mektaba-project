@@ -1,38 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:test/config/palette.dart';
+import 'package:test/models/reservation.dart';
+import 'package:test/models/stock.dart';
+import 'package:test/pages/auth/login.dart';
+import 'package:test/providers/providers.dart';
+import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:test/widget/snapckBar.dart';
 
-class BookDetail extends StatefulWidget {
-  const BookDetail({
+class BookDetail extends HookConsumerWidget {
+  BookDetail({
     super.key,
     this.stock,
+    required this.mektabaId,
+    // this.isStockReservedByUserFromBookConsultation
   });
 
   final stock;
+  final mektabaId;
+  // final isStockReservedByUserFromBookConsultation;
 
   @override
-  State<BookDetail> createState() => _BookDetailState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dynamic user = ref.watch(authProvider);
+    final reserveBouttonBackgroundColor = useState<Color>(Palette.secondary);
+    // bool isActualStockReserved = false;
+    // final _isStockReservedByUser = useState<bool>(false);
 
-class _BookDetailState extends State<BookDetail>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+    final _tabController = useTabController(
+        initialIndex: 0, initialLength: 2, vsync: useSingleTickerProvider());
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _tabController = TabController(vsync: this, length: 2);
-  }
+    void updateReserveButton(status) {
+      switch (status) {
+        case StockStatus.available:
+          reserveBouttonBackgroundColor.value = Palette.secondary;
+        default:
+          reserveBouttonBackgroundColor.value = Colors.grey;
+      }
+    }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _tabController.dispose();
-    super.dispose();
-  }
+    updateReserveButton(stock.status);
 
-  @override
-  Widget build(BuildContext context) {
+    // void isStockReservedByUserFonction() async {
+    //   print("isStockReservedByUserFromBookConsultation");
+    //   print(isStockReservedByUserFromBookConsultation.value);
+    //   if (user != null) {
+    //     if (isStockReservedByUserFromBookConsultation.value == null) {
+    //       _isStockReservedByUser.value = await isStockReservedByUser(
+    //           stock.id, ReserveStock(user: user.id, mektaba: mektabaId));
+    //     } else {
+    //       print("norequet");
+    //       _isStockReservedByUser.value =
+    //           isStockReservedByUserFromBookConsultation.value;
+    //     }
+    //   }
+    // }
+
+    // useEffect(() {
+    //   isStockReservedByUserFonction();
+    // }, [user]);
+
+    onReserve() async {
+      ReserveStock reservationData =
+          ReserveStock(user: user.id, mektaba: mektabaId);
+      final ReservationRes reservationRes =
+          await reserveStock(stock.id, reservationData);
+      if (reservationRes.success == true) {
+        // _isStockReservedByUser.value = true;
+        stock.status = StockStatus.reserved;
+        updateReserveButton(stock.status);
+        showCustomSnackBar(context, Palette.secondary, reservationRes.message);
+      } else if (reservationRes.success == false) {
+        showCustomSnackBar(context, Palette.quaternary, reservationRes.message);
+      } else {
+        showCustomSnackBar(context, Palette.quaternary,
+            "Un problème est survenu, veuillez réessayer");
+      }
+    }
+
+    onCancel() async {
+      ReserveStock reservationData =
+          ReserveStock(user: user.id, mektaba: mektabaId);
+      final ReservationRes reservationRes =
+          await deleteReservation(stock.id, reservationData);
+      if (reservationRes.success == true) {
+        // _isStockReservedByUser.value = false;
+        stock.status = StockStatus.available;
+        updateReserveButton(stock.status);
+        showCustomSnackBar(context, Palette.secondary, reservationRes.message);
+      } else if (reservationRes.success == false) {
+        showCustomSnackBar(context, Palette.quaternary, reservationRes.message);
+      } else {
+        showCustomSnackBar(context, Palette.quaternary,
+            "Un problème est survenu, veuillez réessayer");
+      }
+    }
+
     return Scaffold(
       appBar: AppBarBuilder(goBackIcon: true, actionIcon: false),
       body: SingleChildScrollView(
@@ -60,13 +125,13 @@ class _BookDetailState extends State<BookDetail>
                   ),
 // Book title
                   Text(
-                    widget.stock.book.title,
+                    stock.book.title,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Berlin',
                         fontSize: 15),
                   ),
-                  Text(widget.stock.book.edition),
+                  Text(stock.book.edition),
                   const SizedBox(
                     height: 20,
                   ),
@@ -106,31 +171,59 @@ class _BookDetailState extends State<BookDetail>
                                     ],
                                   ),
                                   Container(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: Text(
-                                      "EN PRET".toUpperCase(),
-                                      style: const TextStyle(
-                                        color: Color(0xFFD88513),
-                                      ),
-                                    ),
-                                  ),
-                                  Text(widget.stock.status)
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: labelizeStockStatus(stock.status)),
                                 ],
                               ),
+                              // Visibility(
+                              //     visible: _isStockReservedByUser.value,
+                              //     child:
+                              // ElevatedButton(
+                              //   onPressed: () {},
+                              //   style: ElevatedButton.styleFrom(
+                              //       backgroundColor: Palette.quaternary,
+                              //       foregroundColor: Colors.white,
+                              //       shape: RoundedRectangleBorder(
+                              //           borderRadius:
+                              //               BorderRadius.circular(0))),
+                              //   child: Text(
+                              //     "Supprimer".toUpperCase(),
+                              //     style: TextStyle(fontWeight: FontWeight.bold),
+                              //   ),
+                              // ),
+                              // ),
+                              // Visibility(
+                              //     visible: !_isStockReservedByUser.value,
+                              //     child:
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (stock.status != StockStatus.available) {
+                                  } else if (user != null) {
+                                    onReserve();
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Login(
+                                                goBackAfterLogin: true,
+                                              )),
+                                    );
+                                  }
+                                },
                                 style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.grey,
+                                    backgroundColor:
+                                        reserveBouttonBackgroundColor.value,
                                     foregroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(0))),
-                                child: const Text(
-                                  "Réserver",
+                                child: Text(
+                                  "Réserver".toUpperCase(),
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               )
+                              // ),
                             ],
                           ),
                         ),
@@ -173,12 +266,12 @@ class _BookDetailState extends State<BookDetail>
                                     children: [
                                       SingleChildScrollView(
                                         child: Text(
-                                          widget.stock.book.description,
+                                          stock.book.description,
                                         ),
                                       ),
                                       SingleChildScrollView(
                                           child: Text(
-                                              "AUTEUR : ${widget.stock.book.author}, \nEDITIONS : ${widget.stock.book.edition} \nANNE : ${widget.stock.book.year} \nLANGUE : ${widget.stock.book.language.join(',')} \nNOMBRE DE PAGES : ${widget.stock.book.numberOfPages} \nEAN13 : ${widget.stock.book.ean13} ")),
+                                              "AUTEUR : ${stock.book.author}, \nEDITIONS : ${stock.book.edition} \nANNE : ${stock.book.year} \nLANGUE : ${stock.book.language.join(',')} \nNOMBRE DE PAGES : ${stock.book.numberOfPages} \nEAN13 : ${stock.book.ean13} ")),
                                     ]))
                           ],
                         ),
