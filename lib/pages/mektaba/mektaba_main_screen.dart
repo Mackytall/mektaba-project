@@ -320,16 +320,17 @@ class MyHomePage extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // favoris
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.only(
-                            left: 16, right: 6, bottom: 8, top: 2),
+                            left: 10, right: 10, bottom: 8, top: 2),
                         elevation: 3,
                         // maximumSize: Size(
                         //     MediaQuery.of(context).size.width / 2.2,
                         //     MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(12)),
                         surfaceTintColor: Colors.white,
                         backgroundColor: null),
                     onPressed: () {},
@@ -351,17 +352,18 @@ class MyHomePage extends HookConsumerWidget {
                       ],
                     ),
                   ),
+                  // membership
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         // padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
                         padding: EdgeInsets.only(
-                            left: 16, right: 6, bottom: 8, top: 2),
+                            left: 10, right: 10, bottom: 8, top: 2),
                         elevation: 3,
                         // maximumSize: Size(
                         //     MediaQuery.of(context).size.width / 2.2,
                         //     MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(12)),
                         surfaceTintColor: Colors.white,
                         backgroundColor: membershipBackgroundColor.value),
                     onPressed: () {
