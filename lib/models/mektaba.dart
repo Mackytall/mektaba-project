@@ -10,6 +10,22 @@ part 'mektaba.g.dart';
 
 enum TimeUnits { day, month, year }
 
+@JsonSerializable(explicitToJson: true)
+class OfficeHours {
+  String day;
+  String hours;
+
+  OfficeHours({required this.day, required this.hours});
+
+  /// Connect the generated [_$OfficeHoursFromJson] function to the `fromJson`
+  /// factory.
+  factory OfficeHours.fromJson(Map<String, dynamic> json) =>
+      _$OfficeHoursFromJson(json);
+
+  /// Connect the generated [_$OfficeHoursToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$OfficeHoursToJson(this);
+}
+
 // class Faq {
 //   String question;
 //   String response;
@@ -47,7 +63,7 @@ class Mektaba {
   TimeUnits? reservedStatusDurationUnit;
   bool disableReservedOption;
   List<Object>? faq; // maybe we can make the type stronger
-  List<Object>? officeHours; // maybe we can make the type stronger
+  List<OfficeHours>? officeHours; // maybe we can make the type stronger
   bool accessibleToEveryone;
   bool canPerformAblution;
   bool canPray;

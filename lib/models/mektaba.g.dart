@@ -6,6 +6,17 @@ part of 'mektaba.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+OfficeHours _$OfficeHoursFromJson(Map<String, dynamic> json) => OfficeHours(
+      day: json['day'] as String,
+      hours: json['hours'] as String,
+    );
+
+Map<String, dynamic> _$OfficeHoursToJson(OfficeHours instance) =>
+    <String, dynamic>{
+      'day': instance.day,
+      'hours': instance.hours,
+    };
+
 Mektaba _$MektabaFromJson(Map<String, dynamic> json) => Mektaba(
       id: json['_id'] as String,
       name: json['name'] as String,
@@ -31,7 +42,7 @@ Mektaba _$MektabaFromJson(Map<String, dynamic> json) => Mektaba(
       disableReservedOption: json['disableReservedOption'] as bool? ?? false,
       faq: (json['faq'] as List<dynamic>?)?.map((e) => e as Object).toList(),
       officeHours: (json['officeHours'] as List<dynamic>?)
-          ?.map((e) => e as Object)
+          ?.map((e) => OfficeHours.fromJson(e as Map<String, dynamic>))
           .toList(),
       accessibleToEveryone: json['accessibleToEveryone'] as bool? ?? false,
       canPerformAblution: json['canPerformAblution'] as bool? ?? false,
@@ -75,7 +86,7 @@ Map<String, dynamic> _$MektabaToJson(Mektaba instance) => <String, dynamic>{
           _$TimeUnitsEnumMap[instance.reservedStatusDurationUnit],
       'disableReservedOption': instance.disableReservedOption,
       'faq': instance.faq,
-      'officeHours': instance.officeHours,
+      'officeHours': instance.officeHours?.map((e) => e.toJson()).toList(),
       'accessibleToEveryone': instance.accessibleToEveryone,
       'canPerformAblution': instance.canPerformAblution,
       'canPray': instance.canPray,

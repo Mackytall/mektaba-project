@@ -57,7 +57,7 @@ class MyHomePage extends HookConsumerWidget {
   // late Future<dynamic> futureStocks;
   late List<dynamic> stocks = [];
   bool isStocksFiltered = false;
-  showConfirmationDialog(BuildContext context, void Function() onCancel) {
+  showCancelConfirmationDialog(BuildContext context, void Function() onCancel) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -126,6 +126,8 @@ class MyHomePage extends HookConsumerWidget {
     final error = useState<String?>(null);
     final membershipStatus = useState<String?>(null);
     final membershipText = useState<String?>("Demande d'adhésion");
+    final isMektabaLoaded = useState<bool>(false);
+    final isMektabaMembersLoaded = useState<bool>(false);
     // final membershipText =
     //     useState<String?>("Adhésion en attente d'approbation");
     final membershipTextColor = useState<Color?>(Colors.black);
@@ -173,7 +175,9 @@ class MyHomePage extends HookConsumerWidget {
     void initializeMektaba() {
       futureMektaba.then((data) {
         mektaba.value = data.mektaba!;
+        isMektabaLoaded.value = true;
         members = mektaba.value!.members;
+        isMektabaMembersLoaded.value = true;
         initializeApprovedMembers();
         if (user != null) {
           if (members == null) {
@@ -250,7 +254,9 @@ class MyHomePage extends HookConsumerWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MektabaDetail()),
+                                        builder: (context) => MektabaDetail(
+                                              mektaba: mektaba.value!,
+                                            )),
                                   );
                                 },
                                 child: Image.network(
@@ -363,7 +369,7 @@ class MyHomePage extends HookConsumerWidget {
                             membershipStatus.value == "refused") {
                           () {};
                         } else if (membershipStatus.value == "pending") {
-                          showConfirmationDialog(context, onCancel);
+                          showCancelConfirmationDialog(context, onCancel);
                         } else if (membershipStatus.value == null) {
                           onSubscribe();
                         }
@@ -438,17 +444,21 @@ class MyHomePage extends HookConsumerWidget {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookConsultation(
-                                    approvedMembers: approvedMembers,
-                                    mektabaId: mektabaId,
-                                  )),
-                        );
+                        isMektabaMembersLoaded.value
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BookConsultation(
+                                          approvedMembers: approvedMembers,
+                                          mektabaId: mektabaId,
+                                        )),
+                              )
+                            : () {};
                       },
                       child: Card(
-                          surfaceTintColor: Colors.white,
+                          surfaceTintColor: isMektabaMembersLoaded.value
+                              ? Colors.white
+                              : Color.fromARGB(255, 105, 105, 105),
                           elevation: 3,
                           child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 4),
@@ -530,13 +540,20 @@ class MyHomePage extends HookConsumerWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AddBook()),
-                      );
+                      isMektabaLoaded.value
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MektabaDetail(
+                                        mektaba: mektaba.value!,
+                                      )),
+                            )
+                          : () {};
                     },
                     child: Card(
-                        surfaceTintColor: Colors.white,
+                        surfaceTintColor: isMektabaLoaded.value
+                            ? Colors.white
+                            : Color.fromARGB(255, 105, 105, 105),
                         elevation: 3,
                         child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),

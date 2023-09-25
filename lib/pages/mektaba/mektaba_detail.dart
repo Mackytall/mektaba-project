@@ -6,9 +6,103 @@ import 'package:test/widget/mektaba_icon.dart';
 import 'package:test/widget/navigate_to_social_media.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:test/models/mektaba.dart';
 
 class MektabaDetail extends StatelessWidget {
   var _screenSize;
+  MektabaDetail({
+    required this.mektaba,
+  });
+  final Mektaba mektaba;
+
+  void onCall() async {
+    final Uri url = Uri(scheme: 'tel', path: mektaba.phone);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      print("l'action n'a pas pu s'éxécuter");
+    }
+  }
+
+  void onEmail() async {
+    final Uri url = Uri(scheme: 'mailto', path: mektaba.email);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      print("l'action n'a pas pu s'éxécuter");
+    }
+  }
+
+  void navigateToWebsite() async {
+    final uri = Uri.parse(mektaba.website!);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      print("l'action n'a pas pu s'éxécuter");
+    }
+  }
+
+  showSocialMedia(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            padding: EdgeInsets.all(32),
+            height: _screenSize.height / 6.5,
+            child: Center(
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: NavigateToSocialMadia(
+                      navigateToInstagram:
+                          mektaba.instagram != null ? true : false,
+                      navigateToFacebook:
+                          mektaba.facebook != null ? true : false,
+                      // navigateToTelegram: mektaba.telegram != null ? true : false,
+                      navigateToTelegram: false,
+                      navigateToWathsapp:
+                          mektaba.whatsapp != null ? true : false,
+                      instagramUrl:
+                          mektaba.instagram != null ? mektaba.instagram! : "",
+                      facebookUrl:
+                          mektaba.facebook != null ? mektaba.facebook! : "",
+                      wathsappUrl:
+                          mektaba.whatsapp != null ? mektaba.whatsapp! : "",
+                    ))),
+          );
+        });
+  }
+
+  showIcon(icon) {
+    return Icon(
+      icon,
+      color: Color(0xFF4B9A6F),
+    );
+  }
+
+  showIcons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Icon(
+          Icons.location_on,
+          color: Color(0xFF4B9A6F),
+        ),
+        mektaba.accessibleToEveryone ? showIcon(Icons.accessible) : null,
+        mektaba.canPerformAblution ? showIcon(Icons.water_drop) : null,
+        mektaba.canPray ? showIcon(Icons.mosque) : null,
+        mektaba.canTakeCourses ? showIcon(Icons.edit_note) : null,
+      ],
+    );
+  }
+
+  showOfficeHours() {
+    List<Widget> officeHoursWidgets = [];
+
+    for (var officeHour in mektaba.officeHours!) {
+      officeHoursWidgets.add(Text("${officeHour.day} : ${officeHour.hours}"));
+    }
+    return officeHoursWidgets;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +120,11 @@ class MektabaDetail extends StatelessWidget {
                   Container(
                     height: _screenSize.height / 4,
                     decoration: BoxDecoration(
-                      image: const DecorationImage(
-                        image: AssetImage(
-                          'assets/pictures/mektaba_tawhid.jpg',
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          mektaba.cover != null
+                              ? mektaba.cover!
+                              : "https://cdn.pixabay.com/photo/2016/02/16/21/07/books-1204029_1280.jpg",
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -59,10 +155,13 @@ class MektabaDetail extends StatelessWidget {
                       children: [
                         Container(
                             padding: EdgeInsets.only(left: 16),
-                            child: Image.asset(
-                              "assets/pictures/logo_tawhid.png",
-                              height: _screenSize.height / 10,
-                            )),
+                            child: Image.network(
+                                mektaba.logo != null
+                                    ? mektaba.logo!
+                                    : "https://media.istockphoto.com/id/949118068/photo/books.webp?b=1&s=612x612&w=0&k=20&c=7LDdLrIwD1hH709wnAr--Yk0s82raIGuCgo7m09jvg0=",
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.fitHeight)),
                         Container(
                           height: _screenSize.height / 9.5,
                           child: Column(
@@ -70,7 +169,7 @@ class MektabaDetail extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                "Centre Tawhid",
+                                mektaba.name,
                                 style: TextStyle(
                                   fontFamily: 'Berlin',
                                   fontSize: 25,
@@ -79,7 +178,8 @@ class MektabaDetail extends StatelessWidget {
                               Row(
                                 children: [
                                   Icon(Icons.location_on),
-                                  Text("8 Rue Notre Dame, 69006 Lyon",
+                                  Text(
+                                      "${mektaba.address}, ${mektaba.zipCode} ${mektaba.city}",
                                       style: TextStyle(fontSize: 12),
                                       textAlign: TextAlign.left),
                                 ],
@@ -101,73 +201,35 @@ class MektabaDetail extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       MektabaIcon(
-                        icon: Icons.phone,
-                        description: "Téléphone",
-                        onTap: () async {
-                          final Uri url =
-                              Uri(scheme: 'tel', path: '04 72 74 18 69');
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url);
-                          } else {
-                            print("l'action n'a pas pu s'éxécuter");
-                          }
-                        },
-                      ),
+                          icon: Icons.phone,
+                          description: "Téléphone",
+                          onTap: mektaba.phone != null ? onCall : () {}),
                       MektabaIcon(
-                        icon: Icons.mail,
-                        description: "Courriel",
-                        onTap: () async {
-                          final Uri url = Uri(
-                              scheme: 'mailto',
-                              path: 'contact@librairie-tawhid.com');
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url);
-                          } else {
-                            print("l'action n'a pas pu s'éxécuter");
-                          }
-                        },
-                      ),
+                          icon: Icons.mail,
+                          description: "Courriel",
+                          onTap: mektaba.email != null ? onEmail : () {}),
                       MektabaIcon(
                         icon: Icons.location_on,
                         description: "Itinéraire",
-                        onTap: () => openMapsSheet(context,
-                            "8 rue Notre Dame, 69006 Lyon", "Centre Tawhid"),
+                        onTap: () => openMapsSheet(
+                            context,
+                            "${mektaba.address}, ${mektaba.zipCode} ${mektaba.city}",
+                            mektaba.name),
                       ),
                       MektabaIcon(
-                        icon: Icons.language,
-                        description: "Site web",
-                        onTap: () async {
-                          final uri =
-                              Uri.parse("https://librairie-tawhid.com/");
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri,
-                                mode: LaunchMode.externalApplication);
-                          } else {
-                            print("l'action n'a pas pu s'éxécuter");
-                          }
-                        },
-                      ),
+                          icon: Icons.language,
+                          description: "Site web",
+                          onTap: mektaba.website != null
+                              ? navigateToWebsite
+                              : () {}),
                       MektabaIcon(
                         icon: Icons.facebook_rounded,
                         description: "Social",
                         onTap: () {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Container(
-                                  padding: EdgeInsets.all(32),
-                                  height: _screenSize.height / 6.5,
-                                  child: Center(
-                                      child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: 
-                                          NavigateToSocialMadia(navigateToInstagram: true, navigateToFacebook: true, navigateToTelegram: false, navigateToWathsapp: true,
-                                          instagramUrl: "https://www.instagram.com/librairietawhid/",
-                                          facebookUrl: "https://www.facebook.com/Librairie.Lyon.Tawhid",
-                                          wathsappUrl: "https://api.whatsapp.com/send/?phone=%2B33612460626&text&type=phone_number&app_absent=0",)
-                                          )),
-                                );
-                              });
+                          if (mektaba.instagram != null ||
+                              mektaba.facebook != null ||
+                              mektaba.whatsapp != null) {}
+                          showSocialMedia(context);
                         },
                       ),
                     ],
@@ -181,8 +243,9 @@ class MektabaDetail extends StatelessWidget {
                   children: [
                     Text("Présentation", style: TextStyle(fontSize: 16)),
                     Divider(),
-                    Text(
-                        "En 1990, l’UJM fonde le centre islamique Tawhid, un centre situé au 8 rue Notre Dame au cœur du 6° arrondissement lyonnais. Le nom Tawhid  est choisi pour rappeler la centralité du lien exclusif de transcendance avec Dieu, cœur même du message de l’Islam."),
+                    Text(mektaba.description != null
+                        ? mektaba.description!
+                        : "Aucune description n'est fournie"),
                     const SizedBox(
                       height: 10,
                     ),
@@ -191,43 +254,18 @@ class MektabaDetail extends StatelessWidget {
                     Divider(),
                     Container(
                         padding: EdgeInsets.symmetric(horizontal: 64),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: Color(0xFF4B9A6F),
-                            ),
-                            Icon(
-                              Icons.accessible,
-                              color: Color(0xFF4B9A6F),
-                            ),
-                            Icon(
-                              Icons.water_drop,
-                              color: Color(0xFF4B9A6F),
-                            ),
-                            Icon(
-                              Icons.mosque,
-                              color: Color(0xFF4B9A6F),
-                            ),
-                            Icon(
-                              Icons.edit_note,
-                              color: Color(0xFF4B9A6F),
-                            ),
-                          ],
-                        )),
+                        child: showIcons()),
                     const SizedBox(
                       height: 10,
                     ),
                     Text("Horaire", style: TextStyle(fontSize: 16)),
                     Divider(),
-                    Text("Lundi : 8h00 - 12h00 / 13h30 - 19h00"),
-                    Text("Mardi : 8h00 - 12h00 / 13h30 - 19h00"),
-                    Text("Mercredi : 8h00 - 12h00 / 13h30 - 19h00"),
-                    Text("Jeudi : 8h00 - 12h00 / 13h30 - 19h00"),
-                    Text("Vendredi : 8h00 - 12h00 / 13h30 - 19h00"),
-                    Text("Samedi : 8h00 - 12h00 / 13h30 - 19h00"),
-                    Text("Dimanche : 8h00 - 12h00 / 13h30 - 19h00"),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: mektaba.officeHours != null
+                          ? showOfficeHours()
+                          : [Text("Aucun horaire n'est fourni")],
+                    )
                   ],
                 ),
               ),
