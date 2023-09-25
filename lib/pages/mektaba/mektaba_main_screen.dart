@@ -125,11 +125,10 @@ class MyHomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final error = useState<String?>(null);
     final membershipStatus = useState<String?>(null);
-    final membershipText = useState<String?>("Demande d'adhésion");
+    // final membershipText = useState<String?>("Demande d'adhésion");
     final isMektabaLoaded = useState<bool>(false);
     final isMektabaMembersLoaded = useState<bool>(false);
-    // final membershipText =
-    //     useState<String?>("Adhésion en attente d'approbation");
+    final membershipText = useState<String?>("Adhésion en attente");
     final membershipTextColor = useState<Color?>(Colors.black);
     final membershipBackgroundColor = useState<Color?>(null);
     final mektaba = useState<Mektaba?>(null);
@@ -159,7 +158,7 @@ class MyHomePage extends HookConsumerWidget {
             membershipBackgroundColor.value = Palette.secondary;
           } else if (member.status == "pending") {
             membershipStatus.value = "pending";
-            membershipText.value = "Adhésion en attente d'approbation";
+            membershipText.value = "Adhésion en attente";
             membershipTextColor.value = Colors.white;
             membershipBackgroundColor.value = Palette.tertiary;
           } else if (member.status == "refused") {
@@ -324,7 +323,7 @@ class MyHomePage extends HookConsumerWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.only(
-                            left: 16, right: 8, bottom: 8, top: 2),
+                            left: 16, right: 6, bottom: 8, top: 2),
                         elevation: 3,
                         // maximumSize: Size(
                         //     MediaQuery.of(context).size.width / 2.2,
@@ -355,7 +354,8 @@ class MyHomePage extends HookConsumerWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         // padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                        padding: EdgeInsets.only(left: 16, bottom: 8, top: 2),
+                        padding: EdgeInsets.only(
+                            left: 16, right: 6, bottom: 8, top: 2),
                         elevation: 3,
                         // maximumSize: Size(
                         //     MediaQuery.of(context).size.width / 2.2,
