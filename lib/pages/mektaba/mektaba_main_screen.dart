@@ -125,10 +125,10 @@ class MyHomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final error = useState<String?>(null);
     final membershipStatus = useState<String?>(null);
-    // final membershipText = useState<String?>("Demande d'adhésion");
+    final membershipText = useState<String?>("Demande d'adhésion");
     final isMektabaLoaded = useState<bool>(false);
     final isMektabaMembersLoaded = useState<bool>(false);
-    final membershipText = useState<String?>("Adhésion en attente");
+    // final membershipText = useState<String?>("Adhésion en attente");
     final membershipTextColor = useState<Color?>(Colors.black);
     final membershipBackgroundColor = useState<Color?>(null);
     final mektaba = useState<Mektaba?>(null);
@@ -324,7 +324,7 @@ class MyHomePage extends HookConsumerWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.only(
-                            left: 10, right: 10, bottom: 8, top: 2),
+                            left: 1, right: 10, bottom: 8, top: 2),
                         elevation: 3,
                         // maximumSize: Size(
                         //     MediaQuery.of(context).size.width / 2.2,
