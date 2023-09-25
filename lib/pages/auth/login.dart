@@ -80,8 +80,12 @@ class Login extends HookConsumerWidget {
                 Text("Pas encore membre ?"),
                 TextButton(
                   onPressed: () => {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignUp()))
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SignUp(
+                                  goHomeAfterSignUp: goBackAfterLogin,
+                                )))
                   },
                   child: Text('Créer un compte'),
                 ),

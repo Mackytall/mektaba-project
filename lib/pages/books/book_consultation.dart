@@ -5,14 +5,13 @@ import 'package:test/models/stock.dart';
 import 'package:test/pages/books/book_detail.dart';
 import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
+import 'package:test/models/mektaba.dart';
 
 class BookConsultation extends StatefulWidget {
   const BookConsultation(
-      {super.key,
-      // required this.stocks,
-      required this.mektabaId});
+      {super.key, required this.approvedMembers, required this.mektabaId});
 
-  // final stocks;
+  final List<Member>? approvedMembers;
   final mektabaId;
   @override
   State<BookConsultation> createState() => _BookConsultationState();
@@ -156,6 +155,8 @@ class _BookConsultationState extends State<BookConsultation> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => BookDetail(
+                                                  approvedMembers:
+                                                      widget.approvedMembers,
                                                   stock: stocks[index],
                                                   mektabaId: widget.mektabaId,
                                                 )),

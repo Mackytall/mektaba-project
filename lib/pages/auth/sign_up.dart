@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:test/models/auth.dart';
 import 'package:test/models/user.dart';
+import 'package:test/pages/mektaba/mektaba_main_screen.dart';
 import 'package:test/providers/providers.dart';
 import 'package:test/utils/user.dart';
 import 'package:test/utils/utils.dart';
@@ -14,11 +15,12 @@ import 'package:image_picker/image_picker.dart';
 enum Gender { male, female }
 
 class SignUp extends HookConsumerWidget {
-  SignUp({super.key});
-
-  showSuccessDialog(
-    BuildContext context,
-  ) {
+  SignUp({
+    super.key,
+    this.goHomeAfterSignUp = false,
+  });
+  final bool goHomeAfterSignUp;
+  showSuccessDialog(BuildContext context, void Function()? redirect) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -51,10 +53,7 @@ class SignUp extends HookConsumerWidget {
                 actions: [
                   TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Profile()),
-                        );
+                        redirect!();
                       },
                       child: Text(
                         "ok",
@@ -87,6 +86,17 @@ class SignUp extends HookConsumerWidget {
     Size _screenSize = MediaQuery.of(context).size;
     Gender? _gender = Gender.male;
 
+    void redirect() {
+      if (!goHomeAfterSignUp) {
+        Navigator.of(context).pop();
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyHomePage()),
+        );
+      }
+    }
+
     void onSignUp() async {
       if (__signUpFormKey.currentState!.validate()) {
         CreateUser user = CreateUser(
@@ -101,18 +111,18 @@ class SignUp extends HookConsumerWidget {
             password: cleanupWhitespace(_password.text));
 
         final authUser = await signUp(user);
-        print(authUser);
         if (authUser.user != null && authUser.token != null) {
           try {
             setUserInLocalStorage(authUser.user!.id, authUser.token!);
             ref.read(tokenProvider.notifier).setCurrentToken(authUser.token!);
             ref.read(authProvider.notifier).setCurrentUser(authUser.user!);
+            ;
           } catch (e) {
             print(e);
           }
 
           error.value = null;
-          showSuccessDialog(context);
+          showSuccessDialog(context, redirect);
         } else if (authUser.errorMessage != null &&
             authUser.errorMessage!.isNotEmpty) {
           error.value = authUser.errorMessage;

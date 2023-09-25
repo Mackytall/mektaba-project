@@ -57,7 +57,7 @@ class MyHomePage extends HookConsumerWidget {
   // late Future<dynamic> futureStocks;
   late List<dynamic> stocks = [];
   bool isStocksFiltered = false;
-  showConfirmationDialog(BuildContext context, void Function() onCancel) {
+  showConfirmationDialog(BuildContext context, void Function()? onCancel) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -83,7 +83,7 @@ class MyHomePage extends HookConsumerWidget {
                           style: TextStyle(color: Palette.quaternary))),
                   TextButton(
                       onPressed: () {
-                        onCancel();
+                        onCancel!();
                       },
                       child: Text("Oui")),
                 ]));
@@ -130,27 +130,34 @@ class MyHomePage extends HookConsumerWidget {
     //     useState<String?>("Adhésion en attente d'approbation");
     final membershipTextColor = useState<Color?>(Colors.black);
     final membershipBackgroundColor = useState<Color?>(null);
-    final mektaba = useState<Mektaba?>(null);
     List<Member>? members = [];
-    List<Member>? approvedMembers = [];
+    List<Member>? approuvedMembers = [];
     final dynamic user = ref.watch(authProvider);
+    bool isUserMember = false;
+    bool isUserApprovedMember = false;
     filterStocks();
-    const mektabaId = "650d4ce3f9250a9b6fed6765";
-    // const mektabaId = "65057e681cbe4e353b0f93c8"; // on local
+    final mektabaId = "650d4ce3f9250a9b6fed6765";
+    // final mektabaId = "65057e681cbe4e353b0f93c8"; // on local
     final futureStocks = getStocksByMektaba(mektabaId);
     Future<MektabaRes> futureMektaba = getMektaba(mektabaId);
 
-    void initializeApprovedMembers() {
-      if (members != null) {
-        approvedMembers
-            .addAll(members!.where((member) => member.status == "approved"));
+    getMembershipStatus(userId) {
+      // Mektaba? mektaba;
+      // futureMektaba.then((data) {
+      // mektaba = data.mektaba;
+      // List<Member>? members = mektaba?.members;
+      if (members == null) {
+        isUserApprovedMember = false;
+        isUserMember = false;
+        return false;
       }
-    }
-
-    void getMembershipStatus() {
+      isUserApprovedMember = false;
+      isUserMember = false;
       for (Member member in members!) {
-        if (member.user == user.id) {
+        if (member.user == userId) {
           if (member.status == "approved") {
+            isUserApprovedMember = true;
+            isUserMember = true;
             membershipStatus.value = "approved";
             membershipText.value = "Adhérent";
             membershipTextColor.value = Colors.white;
@@ -160,7 +167,11 @@ class MyHomePage extends HookConsumerWidget {
             membershipText.value = "Adhésion en attente d'approbation";
             membershipTextColor.value = Colors.white;
             membershipBackgroundColor.value = Palette.tertiary;
+            isUserApprovedMember = false;
+            isUserMember = true;
           } else if (member.status == "refused") {
+            isUserApprovedMember = false;
+            isUserMember = true;
             membershipStatus.value = "refused";
             membershipText.value = "Adhésion refusé";
             membershipTextColor.value = Colors.white;
@@ -168,25 +179,14 @@ class MyHomePage extends HookConsumerWidget {
           }
         }
       }
+      // });
     }
 
-    void initializeMektaba() {
-      futureMektaba.then((data) {
-        mektaba.value = data.mektaba!;
-        members = mektaba.value!.members;
-        initializeApprovedMembers();
-        if (user != null) {
-          if (members == null) {
-            return false;
-          }
-          if (members != null) {
-            getMembershipStatus();
-          }
-        }
-      });
+    Future<void> fetchData() async {
+      if (user != null) {
+        await getMembershipStatus(user.id);
+      }
     }
-
-    initializeMektaba();
 
     void onSubscribe() async {
       String userId = user.id;
@@ -200,6 +200,8 @@ class MyHomePage extends HookConsumerWidget {
         membershipText.value = subcribeRes.message;
         membershipTextColor.value = Colors.white;
         membershipBackgroundColor.value = Palette.tertiary;
+        isUserApprovedMember = false;
+        isUserMember = true;
       } else if (subcribeRes.error != null || subcribeRes.message != null) {
         error.value = subcribeRes.error;
         print(error.value);
@@ -214,18 +216,20 @@ class MyHomePage extends HookConsumerWidget {
     void onCancel() async {
       String userId = user.id;
       final subcribeRes = await cancelMembershipRequest(mektabaId, userId);
+      print(subcribeRes);
       if (subcribeRes.success == true) {
         membershipStatus.value = subcribeRes.status;
         membershipText.value = subcribeRes.message;
         membershipTextColor.value = Colors.black;
         membershipBackgroundColor.value = null;
+        isUserApprovedMember = false;
+        isUserMember = false;
         Navigator.of(context).pop();
       } else if (subcribeRes.error != null) {
         error.value = subcribeRes.error;
         print(error.value);
       } else {
         error.value = "Un problème est survenu, veuillez réessayer";
-        print(error.value);
       }
     }
 
@@ -239,69 +243,84 @@ class MyHomePage extends HookConsumerWidget {
             children: <Widget>[
               const SizedBox(height: 20),
 // Mektaba main screen's Header
-              mektaba.value == null
-                  ? Center(child: CircularProgressIndicator())
-                  : Row(
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.only(right: 16),
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MektabaDetail()),
-                                  );
-                                },
-                                child: Image.network(
-                                    mektaba.value!.logo != null
-                                        ? mektaba.value!.logo!
-                                        : "https://media.istockphoto.com/id/949118068/photo/books.webp?b=1&s=612x612&w=0&k=20&c=7LDdLrIwD1hH709wnAr--Yk0s82raIGuCgo7m09jvg0=",
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.fitHeight))),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Bienvenue dans la mektaba',
+              FutureBuilder(
+                  future: futureMektaba,
+                  builder: (builder, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text('Erreur: ${snapshot.error}');
+                    } else if (!snapshot.hasData) {
+                      return Text('Aucune donnée disponible.');
+                    } else {
+                      Mektaba mektaba = snapshot.data!.mektaba!;
+                      members = mektaba.members;
+                      fetchData();
+                      return Row(
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.only(right: 16),
+                              child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MektabaDetail()),
+                                    );
+                                  },
+                                  child: Image.network(
+                                      mektaba.logo != null
+                                          ? mektaba.logo!
+                                          : "https://media.istockphoto.com/id/949118068/photo/books.webp?b=1&s=612x612&w=0&k=20&c=7LDdLrIwD1hH709wnAr--Yk0s82raIGuCgo7m09jvg0=",
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.fitHeight))),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Bienvenue dans la mektaba',
+                                    style: TextStyle(
+                                        fontFamily: 'Berlin', fontSize: 20)),
+                                Text(
+                                  snapshot.data!.mektaba!.name,
                                   style: TextStyle(
-                                      fontFamily: 'Berlin', fontSize: 20)),
-                              Text(
-                                mektaba.value!.name,
-                                style: TextStyle(
-                                  fontFamily: 'Berlin',
-                                  fontSize: 30,
+                                    fontFamily: 'Berlin',
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.left,
                                 ),
-                                textAlign: TextAlign.left,
-                              ),
-                              InkWell(
-                                onTap: () => openMapsSheet(
-                                    context,
-                                    "${mektaba.value!.address}, ${mektaba.value!.zipCode} ${mektaba.value!.city}",
-                                    mektaba.value!.name),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: Color(0xFF4B9A6F),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      child: Text(
-                                          "${mektaba.value!.address}, ${mektaba.value!.zipCode} ${mektaba.value!.city}",
-                                          // style: TextStyle(fontSize: 15),
-                                          textAlign: TextAlign.left),
-                                    )
-                                  ],
+                                InkWell(
+                                  onTap: () => openMapsSheet(
+                                      context,
+                                      "${mektaba.address}, ${mektaba.zipCode} ${mektaba.city}",
+                                      mektaba.name),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: Color(0xFF4B9A6F),
+                                      ),
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.5,
+                                        child: Text(
+                                            "${mektaba.address}, ${mektaba.zipCode} ${mektaba.city}",
+                                            // style: TextStyle(fontSize: 15),
+                                            textAlign: TextAlign.left),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }
+                  }),
 
               const SizedBox(
                 height: 10,
@@ -319,9 +338,9 @@ class MyHomePage extends HookConsumerWidget {
                     style: ElevatedButton.styleFrom(
                         // padding: EdgeInsets.only(left: 16, bottom: 8, top: 2),
                         elevation: 3,
-                        // maximumSize: Size(
-                        //     MediaQuery.of(context).size.width / 2.2,
-                        //     MediaQuery.of(context).size.height / 10),
+                        maximumSize: Size(
+                            MediaQuery.of(context).size.width / 2.2,
+                            MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white,
@@ -336,7 +355,7 @@ class MyHomePage extends HookConsumerWidget {
                         ),
                         Container(
                             alignment: Alignment.center,
-                            height: 40,
+                            height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width / 4.5,
                             child: AutoSizeText('Ajouter en favoris',
                                 style: TextStyle(
@@ -350,9 +369,9 @@ class MyHomePage extends HookConsumerWidget {
                         // padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
                         padding: EdgeInsets.only(left: 16, bottom: 8, top: 2),
                         elevation: 3,
-                        // maximumSize: Size(
-                        //     MediaQuery.of(context).size.width / 2.2,
-                        //     MediaQuery.of(context).size.height / 10),
+                        maximumSize: Size(
+                            MediaQuery.of(context).size.width / 2.2,
+                            MediaQuery.of(context).size.height / 10),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         surfaceTintColor: Colors.white,
@@ -361,10 +380,16 @@ class MyHomePage extends HookConsumerWidget {
                       if (user != null) {
                         if (membershipStatus.value == "approved" ||
                             membershipStatus.value == "refused") {
+                          print(
+                              "membershipStatus.value == approved | approved)");
+
                           () {};
                         } else if (membershipStatus.value == "pending") {
+                          print("membershipStatus.value == pending)");
+
                           showConfirmationDialog(context, onCancel);
                         } else if (membershipStatus.value == null) {
+                          print("membershipStatus.value == null)");
                           onSubscribe();
                         }
                       } else {
@@ -388,7 +413,7 @@ class MyHomePage extends HookConsumerWidget {
                         ),
                         Container(
                             alignment: Alignment.center,
-                            height: 40,
+                            height: MediaQuery.of(context).size.height / 20,
                             width: MediaQuery.of(context).size.width / 3.2,
                             child: AutoSizeText(membershipText.value.toString(),
                                 style: TextStyle(
@@ -442,7 +467,7 @@ class MyHomePage extends HookConsumerWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => BookConsultation(
-                                    approvedMembers: approvedMembers,
+                                    // stocks: stocks,
                                     mektabaId: mektabaId,
                                   )),
                         );
@@ -677,8 +702,6 @@ class MyHomePage extends HookConsumerWidget {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => BookDetail(
-                                                    approvedMembers:
-                                                        approvedMembers,
                                                     stock: stocks[index],
                                                     mektabaId: mektabaId,
                                                   )),

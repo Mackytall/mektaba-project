@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test/config/palette.dart';
+import 'package:test/models/mektaba.dart';
 import 'package:test/models/reservation.dart';
 import 'package:test/models/stock.dart';
 import 'package:test/pages/auth/login.dart';
@@ -13,11 +14,12 @@ import 'package:test/widget/snapckBar.dart';
 class BookDetail extends HookConsumerWidget {
   BookDetail({
     super.key,
-    this.stock,
+    required this.approvedMembers,
+    required this.stock,
     required this.mektabaId,
     // this.isStockReservedByUserFromBookConsultation
   });
-
+  final List<Member>? approvedMembers;
   final stock;
   final mektabaId;
   // final isStockReservedByUserFromBookConsultation;
@@ -39,6 +41,18 @@ class BookDetail extends HookConsumerWidget {
         default:
           reserveBouttonBackgroundColor.value = Colors.grey;
       }
+    }
+
+    bool isUserApproved(userId) {
+      if (approvedMembers == null) {
+        return false;
+      }
+      for (Member member in approvedMembers!) {
+        if (member.user == userId && member.status == "approved") {
+          return true;
+        }
+      }
+      return false;
     }
 
     updateReserveButton(stock.status);
@@ -200,7 +214,12 @@ class BookDetail extends HookConsumerWidget {
                                 onPressed: () {
                                   if (stock.status != StockStatus.available) {
                                   } else if (user != null) {
-                                    onReserve();
+                                    isUserApproved(user.id)
+                                        ? onReserve()
+                                        : showCustomSnackBar(
+                                            context,
+                                            Palette.quaternary,
+                                            "Vous devez être adhérent pour pouvoir réservé");
                                   } else {
                                     Navigator.push(
                                       context,
