@@ -323,7 +323,8 @@ class MyHomePage extends HookConsumerWidget {
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.only(left: 16, bottom: 8, top: 2),
+                        padding: EdgeInsets.only(
+                            left: 16, right: 8, bottom: 8, top: 2),
                         elevation: 3,
                         // maximumSize: Size(
                         //     MediaQuery.of(context).size.width / 2.2,
@@ -343,7 +344,7 @@ class MyHomePage extends HookConsumerWidget {
                         Container(
                             alignment: Alignment.center,
                             height: 40,
-                            width: MediaQuery.of(context).size.width / 4.5,
+                            width: MediaQuery.of(context).size.width / 3.3,
                             child: AutoSizeText('Ajouter en favoris',
                                 style: TextStyle(
                                   color: Colors.black,
@@ -395,7 +396,7 @@ class MyHomePage extends HookConsumerWidget {
                         Container(
                             alignment: Alignment.center,
                             height: 40,
-                            width: MediaQuery.of(context).size.width / 3.2,
+                            width: MediaQuery.of(context).size.width / 3.3,
                             child: AutoSizeText(membershipText.value.toString(),
                                 style: TextStyle(
                                   color: membershipTextColor.value,

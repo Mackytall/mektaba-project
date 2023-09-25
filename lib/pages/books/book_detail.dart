@@ -219,7 +219,7 @@ class BookDetail extends HookConsumerWidget {
                                         : showCustomSnackBar(
                                             context,
                                             Palette.quaternary,
-                                            "Vous devez être adhérent pour pouvoir réservé");
+                                            "Vous devez être adhérent pour pouvoir réserver");
                                   } else {
                                     Navigator.push(
                                       context,
