@@ -8,6 +8,7 @@ import 'package:test/pages/auth/login.dart';
 import 'package:test/pages/books/book_detail.dart';
 import 'package:test/pages/books/add_book/add_book.dart';
 import 'package:test/pages/events/event_detail.dart';
+import 'package:test/pages/faq.dart';
 import 'package:test/pages/mektaba/mektaba_detail.dart';
 import 'package:test/pages/mektaba/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/pages/mektaba/mektaba_owner/member/list_of_mektaba.dart';
@@ -461,7 +462,7 @@ class MyHomePage extends HookConsumerWidget {
                       child: Card(
                           surfaceTintColor: isMektabaMembersLoaded.value
                               ? Colors.white
-                              : Color.fromARGB(255, 105, 105, 105),
+                              : Palette.grey,
                           elevation: 3,
                           child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 4),
@@ -490,7 +491,8 @@ class MyHomePage extends HookConsumerWidget {
                       );
                     },
                     child: Card(
-                        surfaceTintColor: Colors.white,
+                        surfaceTintColor:
+                            isMektabaLoaded.value ? Colors.white : Palette.grey,
                         elevation: 3,
                         child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),
@@ -513,14 +515,19 @@ class MyHomePage extends HookConsumerWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MemberValidation()),
-                      );
+                      isMektabaLoaded.value
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FaqPage(
+                                        faq: mektaba.value!.faq,
+                                      )),
+                            )
+                          : () {};
                     },
                     child: Card(
-                        surfaceTintColor: Colors.white,
+                        surfaceTintColor:
+                            isMektabaLoaded.value ? Colors.white : Palette.grey,
                         elevation: 3,
                         child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),
@@ -554,9 +561,8 @@ class MyHomePage extends HookConsumerWidget {
                           : () {};
                     },
                     child: Card(
-                        surfaceTintColor: isMektabaLoaded.value
-                            ? Colors.white
-                            : Color.fromARGB(255, 105, 105, 105),
+                        surfaceTintColor:
+                            isMektabaLoaded.value ? Colors.white : Palette.grey,
                         elevation: 3,
                         child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 4),

@@ -5,4 +5,5 @@ class Palette {
   static const Color secondary = Color(0xFF4B9A6F);
   static const Color tertiary = Color(0xFFD88513);
   static const Color quaternary = Colors.red;
+  static const Color grey = Color.fromARGB(255, 105, 105, 105);
 }

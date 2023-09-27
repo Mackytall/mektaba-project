@@ -17,6 +17,16 @@ Map<String, dynamic> _$OfficeHoursToJson(OfficeHours instance) =>
       'hours': instance.hours,
     };
 
+Faq _$FaqFromJson(Map<String, dynamic> json) => Faq(
+      question: json['question'] as String,
+      response: json['response'] as String,
+    );
+
+Map<String, dynamic> _$FaqToJson(Faq instance) => <String, dynamic>{
+      'question': instance.question,
+      'response': instance.response,
+    };
+
 Mektaba _$MektabaFromJson(Map<String, dynamic> json) => Mektaba(
       id: json['_id'] as String,
       name: json['name'] as String,
@@ -40,7 +50,9 @@ Mektaba _$MektabaFromJson(Map<String, dynamic> json) => Mektaba(
       reservedStatusDurationUnit: $enumDecodeNullable(
           _$TimeUnitsEnumMap, json['reservedStatusDurationUnit']),
       disableReservedOption: json['disableReservedOption'] as bool? ?? false,
-      faq: (json['faq'] as List<dynamic>?)?.map((e) => e as Object).toList(),
+      faq: (json['faq'] as List<dynamic>?)
+          ?.map((e) => Faq.fromJson(e as Map<String, dynamic>))
+          .toList(),
       officeHours: (json['officeHours'] as List<dynamic>?)
           ?.map((e) => OfficeHours.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -85,7 +97,7 @@ Map<String, dynamic> _$MektabaToJson(Mektaba instance) => <String, dynamic>{
       'reservedStatusDurationUnit':
           _$TimeUnitsEnumMap[instance.reservedStatusDurationUnit],
       'disableReservedOption': instance.disableReservedOption,
-      'faq': instance.faq,
+      'faq': instance.faq?.map((e) => e.toJson()).toList(),
       'officeHours': instance.officeHours?.map((e) => e.toJson()).toList(),
       'accessibleToEveryone': instance.accessibleToEveryone,
       'canPerformAblution': instance.canPerformAblution,

@@ -26,17 +26,23 @@ class OfficeHours {
   Map<String, dynamic> toJson() => _$OfficeHoursToJson(this);
 }
 
-// class Faq {
-//   String question;
-//   String response;
+@JsonSerializable(explicitToJson: true)
+class Faq {
+  String question;
+  String response;
 
-//   Faq({
-//     required this.question,
-//     required this.response,
-//   });
-// }
+  Faq({
+    required this.question,
+    required this.response,
+  });
 
-// enum OfficeHours { day, hours }
+  /// Connect the generated [_$FaqFromJson] function to the `fromJson`
+  /// factory.
+  factory Faq.fromJson(Map<String, dynamic> json) => _$FaqFromJson(json);
+
+  /// Connect the generated [_$FaqToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$FaqToJson(this);
+}
 
 @JsonSerializable(explicitToJson: true)
 class Mektaba {
@@ -62,7 +68,7 @@ class Mektaba {
   int? reservedStatusDuration;
   TimeUnits? reservedStatusDurationUnit;
   bool disableReservedOption;
-  List<Object>? faq; // maybe we can make the type stronger
+  List<Faq>? faq; // maybe we can make the type stronger
   List<OfficeHours>? officeHours; // maybe we can make the type stronger
   bool accessibleToEveryone;
   bool canPerformAblution;
