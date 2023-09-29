@@ -23,6 +23,7 @@ class User {
   String? city;
   String? country;
   List<String>? likedEvents = [];
+  List<String>? likedStocks = [];
   DateTime? createdAt;
   DateTime? updatedAt;
 
@@ -39,6 +40,7 @@ class User {
     this.city,
     this.country,
     this.likedEvents,
+    this.likedStocks,
     this.createdAt,
     this.updatedAt,
   });
@@ -156,3 +158,28 @@ Future<User?> getUser(String id, String token) async {
     }
   });
 }
+
+// Future<String> likeOrDislikeStockForUser(
+//     String userId, String mektabaId, String stockId) async {
+//   try {
+//     final res = await http.post(
+//         Uri.parse("$usersApi/$userId/likes/mektabas/$mektabaId/stocks/$stockId"),
+//         body: json.encode({}),
+//         headers: getAuthHeaders(token));
+//     final parsed = json.decode(res.body);
+//     if (res.statusCode == 200) {
+//       return parsed["message"];
+//     }
+//     if (kDebugMode) {
+//       print(res.statusCode);
+//       print(parsed);
+//     }
+//     const errorMessage = "Failed to like or dislike book";
+//     return errorMessage;
+//   } catch (e) {
+//     if (kDebugMode) {
+//       print(e);
+//     }
+//     throw Exception(e);
+//   }
+// }

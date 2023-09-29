@@ -8,17 +8,17 @@ import 'package:test/utils/utils.dart';
 import 'package:test/widget/app_bar_builder.dart';
 import 'package:test/models/mektaba.dart';
 
-class BookConsultation extends StatefulWidget {
-  const BookConsultation(
+class FavoritesPage extends StatefulWidget {
+  const FavoritesPage(
       {super.key, required this.approvedMembers, required this.mektabaId});
 
   final List<Member>? approvedMembers;
   final mektabaId;
   @override
-  State<BookConsultation> createState() => _BookConsultationState();
+  State<FavoritesPage> createState() => _FavoritesPageState();
 }
 
-class _BookConsultationState extends State<BookConsultation> {
+class _FavoritesPageState extends State<FavoritesPage> {
   late List<dynamic> stocks = [];
   final TextEditingController _searchController = TextEditingController();
   late Future futureStocks;
@@ -74,64 +74,28 @@ class _BookConsultationState extends State<BookConsultation> {
                 const Row(
                   children: [
                     Text(
-                      'Consultation',
+                      'Favoris',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Berlin',
-                          fontSize: Sizes.h2),
+                          fontWeight: FontWeight.bold, fontSize: Sizes.h2),
                     ),
                   ],
                 ),
-                const Text("Liste des ouvrages accessible dans la mektaba"),
+                const Text("Liste des ouvrages favoris dans la mektaba"),
+
                 const SizedBox(
                   height: 10,
                 ),
-// Search Bar
-                Visibility(
-                    visible: false,
-                    child: Container(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Tapez un ouvrage, un auteur, ect...',
-                          // clear button
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              Icons.cancel,
-                            ),
-                            onPressed: () => _searchController.clear(),
-                          ),
-                          // search icon or button
-                          prefixIcon: IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              // Perform the search here
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(100.0),
-                          ),
-                        ),
-                      ),
-                    )),
-                // const SizedBox(
-                //   height: 10,
-                // ),
 // Filters
-                Visibility(
-                    visible: false,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("FILTRES".toUpperCase()),
-                        const Icon(Icons.filter_list)
-                      ],
-                    )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("FILTRES".toUpperCase()),
+                    const Icon(Icons.filter_list)
+                  ],
+                ),
                 const Divider(),
 // Book list
                 Expanded(
-                    // width: MediaQuery.of(context).size.width,
-                    // height: MediaQuery.of(context).size.height / 1.7,
                     child: FutureBuilder(
                         future: futureStocks,
                         builder: (context, snapshot) {
@@ -172,7 +136,7 @@ class _BookConsultationState extends State<BookConsultation> {
                                       surfaceTintColor: Colors.white,
                                       child: Padding(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 8),
+                                              horizontal: 16, vertical: 8),
                                           child: SizedBox(
                                               width: MediaQuery.of(context)
                                                   .size
@@ -183,27 +147,22 @@ class _BookConsultationState extends State<BookConsultation> {
                                                   8,
                                               child: Row(children: [
                                                 Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 4),
+                                                    padding: EdgeInsets.only(
+                                                        right: 16),
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width /
-                                                            4,
+                                                            5,
                                                     height:
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .height /
                                                             8,
                                                     child: FittedBox(
-                                                        fit: BoxFit.fitHeight,
-                                                        child: Image.network(
-                                                            stocks[index]
-                                                                .book
-                                                                .coverPhoto)
-                                                        // Image.asset(
-                                                        //     'assets/pictures/wajiz.jpg')
-                                                        )),
+                                                        fit: BoxFit.fitWidth,
+                                                        child: Image.asset(
+                                                            'assets/pictures/wajiz.jpg'))),
                                                 Column(
                                                   mainAxisSize:
                                                       MainAxisSize.max,
@@ -243,33 +202,26 @@ class _BookConsultationState extends State<BookConsultation> {
                                                         fontSize: 12,
                                                       ),
                                                     ),
-                                                    Visibility(
-                                                        visible: false,
-                                                        child: SizedBox(
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width /
-                                                                1.7,
-                                                            child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                labelizeStockStatus(
-                                                                    stocks[index]
-                                                                        .status),
-                                                                const Icon(
-                                                                  Icons
-                                                                      .favorite_outlined,
-                                                                  color: Colors
-                                                                      .grey,
-                                                                )
-                                                              ],
-                                                            )))
+                                                    SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            1.7,
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            labelizeStockStatus(
+                                                                stocks[index]
+                                                                    .status),
+                                                            const Icon(
+                                                                Icons.favorite)
+                                                          ],
+                                                        ))
                                                   ],
                                                 )
                                               ]))),
@@ -278,70 +230,6 @@ class _BookConsultationState extends State<BookConsultation> {
                             );
                           }
                         }))
-
-                // GestureDetector(
-                //     onTap: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //             builder: (context) => const BookDetail()),
-                //       );
-                //     },
-                //     child: Card(
-                //       elevation: 3,
-                //       surfaceTintColor: Colors.white,
-                //       child: Padding(
-                //           padding:
-                //               EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                //           child: SizedBox(
-                //               width: MediaQuery.of(context).size.width,
-                //               height: MediaQuery.of(context).size.height / 9,
-                //               child: Row(children: [
-                //                 Container(
-                //                     padding: EdgeInsets.only(right: 16),
-                //                     // width:
-                //                     //     MediaQuery.of(context).size.width / 5,
-                //                     // height: 120,
-                //                     child: FittedBox(
-                //                         fit: BoxFit.fitWidth,
-                //                         child: Image.asset(
-                //                             'assets/pictures/wajiz.jpg'))),
-                //                 Column(
-                //                   mainAxisSize: MainAxisSize.max,
-                //                   mainAxisAlignment:
-                //                       MainAxisAlignment.spaceBetween,
-                //                   crossAxisAlignment: CrossAxisAlignment.start,
-                //                   children: [
-                //                     Text("Les Prophètes racontés aux enfants"),
-                //                     Text(
-                //                       "Editions Tawhid",
-                //                       style: TextStyle(
-                //                         color: Color(0xFF4B9A6F),
-                //                         fontSize: 12,
-                //                       ),
-                //                     ),
-                //                     SizedBox(
-                //                         width:
-                //                             MediaQuery.of(context).size.width /
-                //                                 1.7,
-                //                         child: Row(
-                //                           mainAxisSize: MainAxisSize.max,
-                //                           mainAxisAlignment:
-                //                               MainAxisAlignment.spaceBetween,
-                //                           children: [
-                //                             Text(
-                //                               "EN PRET".toUpperCase(),
-                //                               style: TextStyle(
-                //                                 color: Color(0xFFD88513),
-                //                               ),
-                //                             ),
-                //                             const Icon(Icons.favorite)
-                //                           ],
-                //                         ))
-                //                   ],
-                //                 )
-                //               ]))),
-                //     )),
               ],
             )),
       ),

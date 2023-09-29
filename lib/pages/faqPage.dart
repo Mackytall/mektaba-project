@@ -36,6 +36,7 @@ class FaqPage extends StatelessWidget {
                 return Theme(
                   data: theme,
                   child: ExpansionTile(
+                    childrenPadding: EdgeInsets.only(left: 16),
                     collapsedShape:
                         Border(bottom: BorderSide(color: Colors.grey)),
                     tilePadding: EdgeInsets.zero,

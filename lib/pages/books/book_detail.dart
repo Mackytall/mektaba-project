@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test/config/palette.dart';
+import 'package:test/config/sizes.dart';
 import 'package:test/models/mektaba.dart';
 import 'package:test/models/reservation.dart';
 import 'package:test/models/stock.dart';
@@ -130,7 +131,7 @@ class BookDetail extends HookConsumerWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Berlin',
-                            fontSize: 18),
+                            fontSize: Sizes.h2),
                       ),
                     ],
                   ),
@@ -151,102 +152,97 @@ class BookDetail extends HookConsumerWidget {
                   ),
 
 //  Book reservation
+                  // Row(children: [
+                  //   Container(
+                  //     color: Colors.blue,
+                  //      width: MediaQuery.of(context).size.width / 1.6,
+                  //         height: MediaQuery.of(context).size.height / 4,
+                  //   )
+                  // ],),
                   Row(
                     children: [
-                      Flexible(
-                        child: Image.asset(
-                          alignment: Alignment.topLeft,
-                          'assets/pictures/wajiz.jpg',
-                          width: MediaQuery.of(context).size.width / 1.6,
-                          height: MediaQuery.of(context).size.height / 4,
-                        ),
+                      Container(
+                        // color: Colors.blue,
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: MediaQuery.of(context).size.height / 4,
+                        child: Image.network(stock.book.coverPhoto),
                       ),
-                      Flexible(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 1.3,
-                          height: MediaQuery.of(context).size.height / 4,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
+                      Visibility(
+                          visible: false,
+                          child: Flexible(
+                            child: Container(
+                              color: Colors.red,
+                              width: MediaQuery.of(context).size.width / 2,
+                              height: MediaQuery.of(context).size.height / 4,
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Row(
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.favorite,
-                                        color: Colors.grey,
+                                      const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.favorite,
+                                            color: Colors.grey,
+                                          ),
+                                          Icon(
+                                            Icons.share,
+                                            color: Colors.grey,
+                                          )
+                                        ],
                                       ),
-                                      Icon(
-                                        Icons.share,
-                                        color: Colors.grey,
-                                      )
+                                      Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          child: labelizeStockStatus(
+                                              stock.status)),
                                     ],
                                   ),
-                                  Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      child: labelizeStockStatus(stock.status)),
+
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (stock.status !=
+                                          StockStatus.available) {
+                                      } else if (user != null) {
+                                        isUserApproved(user.id)
+                                            ? onReserve()
+                                            : showCustomSnackBar(
+                                                context,
+                                                Palette.quaternary,
+                                                "Vous devez être adhérent pour pouvoir réserver");
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Login(
+                                                    goBackAfterLogin: true,
+                                                  )),
+                                        );
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            reserveBouttonBackgroundColor.value,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(0))),
+                                    child: Text(
+                                      "Réserver".toUpperCase(),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                  // ),
                                 ],
                               ),
-                              // Visibility(
-                              //     visible: _isStockReservedByUser.value,
-                              //     child:
-                              // ElevatedButton(
-                              //   onPressed: () {},
-                              //   style: ElevatedButton.styleFrom(
-                              //       backgroundColor: Palette.quaternary,
-                              //       foregroundColor: Colors.white,
-                              //       shape: RoundedRectangleBorder(
-                              //           borderRadius:
-                              //               BorderRadius.circular(0))),
-                              //   child: Text(
-                              //     "Supprimer".toUpperCase(),
-                              //     style: TextStyle(fontWeight: FontWeight.bold),
-                              //   ),
-                              // ),
-                              // ),
-                              // Visibility(
-                              //     visible: !_isStockReservedByUser.value,
-                              //     child:
-                              ElevatedButton(
-                                onPressed: () {
-                                  if (stock.status != StockStatus.available) {
-                                  } else if (user != null) {
-                                    isUserApproved(user.id)
-                                        ? onReserve()
-                                        : showCustomSnackBar(
-                                            context,
-                                            Palette.quaternary,
-                                            "Vous devez être adhérent pour pouvoir réserver");
-                                  } else {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Login(
-                                                goBackAfterLogin: true,
-                                              )),
-                                    );
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        reserveBouttonBackgroundColor.value,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(0))),
-                                child: Text(
-                                  "Réserver".toUpperCase(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              )
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ),
+                            ),
+                          )),
                     ],
                   ),
                   const SizedBox(

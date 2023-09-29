@@ -21,6 +21,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       likedEvents: (json['likedEvents'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      likedStocks: (json['likedStocks'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
@@ -42,6 +45,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'city': instance.city,
       'country': instance.country,
       'likedEvents': instance.likedEvents,
+      'likedStocks': instance.likedStocks,
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
     };

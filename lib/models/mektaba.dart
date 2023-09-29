@@ -243,7 +243,7 @@ Future cancelMembershipRequest(String mektabaId, String userId) async {
       return SubscribeRes(
         success: parsed["success"],
         message: "Demande d'adhésion",
-        status: null,
+        status: "",
       );
     } else {
       return SubscribeRes(error: parsed["error"]);

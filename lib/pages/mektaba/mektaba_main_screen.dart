@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test/config/sizes.dart';
 import 'package:test/models/stock.dart';
 import 'package:test/models/mektaba.dart';
 import 'package:test/models/stockWithBookDetail.dart';
@@ -8,7 +9,8 @@ import 'package:test/pages/auth/login.dart';
 import 'package:test/pages/books/book_detail.dart';
 import 'package:test/pages/books/add_book/add_book.dart';
 import 'package:test/pages/events/event_detail.dart';
-import 'package:test/pages/faq.dart';
+import 'package:test/pages/faqPage.dart';
+import 'package:test/pages/favoritesPage.dart';
 import 'package:test/pages/mektaba/mektaba_detail.dart';
 import 'package:test/pages/mektaba/mektaba_owner/member/add_a_mektaba.dart';
 import 'package:test/pages/mektaba/mektaba_owner/member/list_of_mektaba.dart';
@@ -125,7 +127,7 @@ class MyHomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final error = useState<String?>(null);
-    final membershipStatus = useState<String?>(null);
+    final membershipStatus = useState<String?>("");
     final membershipText = useState<String?>("Demande d'adhésion");
     final isMektabaLoaded = useState<bool>(false);
     final isMektabaMembersLoaded = useState<bool>(false);
@@ -249,30 +251,21 @@ class MyHomePage extends HookConsumerWidget {
                       children: [
                         Padding(
                             padding: EdgeInsets.only(right: 16),
-                            child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MektabaDetail(
-                                              mektaba: mektaba.value!,
-                                            )),
-                                  );
-                                },
-                                child: Image.network(
-                                    mektaba.value!.logo != null
-                                        ? mektaba.value!.logo!
-                                        : "https://media.istockphoto.com/id/949118068/photo/books.webp?b=1&s=612x612&w=0&k=20&c=7LDdLrIwD1hH709wnAr--Yk0s82raIGuCgo7m09jvg0=",
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.fitHeight))),
+                            child: Image.network(
+                                mektaba.value!.logo != null
+                                    ? mektaba.value!.logo!
+                                    : "https://media.istockphoto.com/id/949118068/photo/books.webp?b=1&s=612x612&w=0&k=20&c=7LDdLrIwD1hH709wnAr--Yk0s82raIGuCgo7m09jvg0=",
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.fitHeight)),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Bienvenue dans la mektaba',
                                   style: TextStyle(
-                                      fontFamily: 'Berlin', fontSize: 20)),
+                                      fontFamily: 'Berlin',
+                                      fontSize: Sizes.h2)),
                               Text(
                                 mektaba.value!.name,
                                 style: TextStyle(
@@ -293,8 +286,9 @@ class MyHomePage extends HookConsumerWidget {
                                       color: Color(0xFF4B9A6F),
                                     ),
                                     Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
+                                      width: MediaQuery.of(context).size.width /
+                                          1.59,
+                                      //* 0.5,
                                       child: Text(
                                           "${mektaba.value!.address}, ${mektaba.value!.zipCode} ${mektaba.value!.city}",
                                           // style: TextStyle(fontSize: 15),
@@ -317,131 +311,187 @@ class MyHomePage extends HookConsumerWidget {
               //   color: Colors.blue,
               //   width: MediaQuery.of(context).size.width,
               // child:
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // favoris
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.only(
-                            left: 1, right: 10, bottom: 8, top: 2),
-                        elevation: 3,
-                        // maximumSize: Size(
-                        //     MediaQuery.of(context).size.width / 2.2,
-                        //     MediaQuery.of(context).size.height / 10),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        surfaceTintColor: Colors.white,
-                        backgroundColor: null),
-                    onPressed: () {},
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.favorite, color: Palette.secondary),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Container(
-                            alignment: Alignment.center,
-                            height: 40,
-                            width: MediaQuery.of(context).size.width / 3.3,
-                            child: AutoSizeText('Ajouter en favoris',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                ))),
-                      ],
+              Visibility(
+                visible: false,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // favoris
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(
+                              left: 1, right: 10, bottom: 8, top: 2),
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          surfaceTintColor: Colors.white,
+                          backgroundColor: null),
+                      onPressed: () {},
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.favorite, color: Palette.secondary),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              width: MediaQuery.of(context).size.width / 3.3,
+                              child: AutoSizeText('Ajouter en favoris',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ))),
+                        ],
+                      ),
                     ),
-                  ),
-                  // membership
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, bottom: 8, top: 2),
-                        elevation: 3,
-                        // maximumSize: Size(
-                        //     MediaQuery.of(context).size.width / 2.2,
-                        //     MediaQuery.of(context).size.height / 10),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        surfaceTintColor: Colors.white,
-                        backgroundColor: membershipBackgroundColor.value),
-                    onPressed: () {
-                      if (user != null) {
-                        if (membershipStatus.value == "approved" ||
-                            membershipStatus.value == "refused") {
-                          () {};
-                        } else if (membershipStatus.value == "pending") {
-                          showCancelConfirmationDialog(context, onCancel);
-                        } else if (membershipStatus.value == null) {
-                          onSubscribe();
+
+                    // membership
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          // padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                          padding: EdgeInsets.only(
+                              left: 10, right: 10, bottom: 8, top: 2),
+                          elevation: 3,
+                          // maximumSize: Size(
+                          //     MediaQuery.of(context).size.width / 2.2,
+                          //     MediaQuery.of(context).size.height / 10),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          surfaceTintColor: Colors.white,
+                          backgroundColor: membershipBackgroundColor.value),
+                      onPressed: () {
+                        if (user != null) {
+                          if (membershipStatus.value == "approved" ||
+                              membershipStatus.value == "refused") {
+                            () {};
+                          } else if (membershipStatus.value == "pending") {
+                            showCancelConfirmationDialog(context, onCancel);
+                          } else if (membershipStatus.value == null) {
+                            onSubscribe();
+                          }
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Login(
+                                      goBackAfterLogin: true,
+                                    )),
+                          );
                         }
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Login(
-                                    goBackAfterLogin: true,
-                                  )),
-                        );
-                      }
-                    },
-                    child: Row(
-                      children: [
-                        Icon(Icons.person_add,
-                            color: membershipTextColor.value == Colors.white
-                                ? Colors.white
-                                : Palette.secondary),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Container(
-                            alignment: Alignment.center,
-                            height: 40,
-                            width: MediaQuery.of(context).size.width / 3.3,
-                            child: AutoSizeText(membershipText.value.toString(),
-                                style: TextStyle(
-                                  color: membershipTextColor.value,
-                                ))),
-                      ],
-                    ),
-                  )
-                ],
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.person_add,
+                              color: membershipTextColor.value == Colors.white
+                                  ? Colors.white
+                                  : Palette.secondary),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Container(
+                              alignment: Alignment.center,
+                              height: 40,
+                              width: MediaQuery.of(context).size.width / 3.3,
+                              child:
+                                  AutoSizeText(membershipText.value.toString(),
+                                      style: TextStyle(
+                                        color: membershipTextColor.value,
+                                      ))),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-              // ),
-              // Search bar
+              // temporary membership
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    padding:
+                        EdgeInsets.only(left: 10, right: 10, bottom: 8, top: 2),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 0.1, color: Colors.black),
+                        borderRadius: BorderRadius.circular(12)),
+                    surfaceTintColor: Colors.white,
+                    backgroundColor: membershipBackgroundColor.value),
+                onPressed: () {
+                  if (user != null) {
+                    if (membershipStatus.value == "approved" ||
+                        membershipStatus.value == "refused") {
+                      () {};
+                    } else if (membershipStatus.value == "pending") {
+                      showCancelConfirmationDialog(context, onCancel);
+                    } else if (membershipStatus.value == "") {
+                      onSubscribe();
+                    }
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Login(
+                                goBackAfterLogin: true,
+                              )),
+                    );
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.person_add,
+                        color: membershipTextColor.value == Colors.white
+                            ? Colors.white
+                            : Palette.secondary),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Container(
+                        alignment: Alignment.center,
+                        // height: 40,
+                        // width: MediaQuery.of(context).size.width / 3.3,
+                        child: AutoSizeText(membershipText.value.toString(),
+                            style: TextStyle(
+                              color: membershipTextColor.value,
+                            ))),
+                  ],
+                ),
+              ),
               SizedBox(
                 height: 10,
               ),
-              Container(
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Tapez un ouvrage, un auteur, ect...',
-                    // clear button
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.cancel,
+              Visibility(
+                visible: false,
+                child: Container(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Tapez un ouvrage, un auteur, ect...',
+                      // clear button
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          Icons.cancel,
+                        ),
+                        onPressed: () => _searchController.clear(),
                       ),
-                      onPressed: () => _searchController.clear(),
-                    ),
-                    // search icon or button
-                    prefixIcon: IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        // Perform the search here
-                      },
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(100.0),
+                      // search icon or button
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          // Perform the search here
+                        },
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100.0),
+                      ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+
+              // const SizedBox(
+              //   height: 10,
+              // ),
 // Cards
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -483,36 +533,44 @@ class MyHomePage extends HookConsumerWidget {
                                   )
                                 ]),
                               )))),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Profile()),
-                      );
-                    },
-                    child: Card(
-                        surfaceTintColor:
-                            isMektabaLoaded.value ? Colors.white : Palette.grey,
-                        elevation: 3,
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 4),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width / 5,
-                              child: Column(children: [
-                                Icon(
-                                  Icons.favorite,
-                                  size: MediaQuery.of(context).size.width / 12,
-                                ),
-                                Text(
-                                  'Mes favoris\n',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                )
-                              ]),
-                            ))),
-                  ),
+                  // Visibility(
+                  //   visible: false,
+                  //   child:
+
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => FavoritesPage(
+                  //               approvedMembers: approvedMembers,
+                  //               mektabaId: mektabaId)),
+                  //     );
+                  //   },
+                  //   child:
+                  //   Card(
+                  //       surfaceTintColor:
+                  //           isMektabaLoaded.value ? Colors.white : Palette.grey,
+                  //       elevation: 3,
+                  //       child: Padding(
+                  //           padding: EdgeInsets.symmetric(vertical: 4),
+                  //           child: SizedBox(
+                  //             width: MediaQuery.of(context).size.width / 5,
+                  //             child: Column(children: [
+                  //               Icon(
+                  //                 Icons.favorite,
+                  //                 size: MediaQuery.of(context).size.width / 12,
+                  //               ),
+                  //               Text(
+                  //                 'Mes favoris\n',
+                  //                 style: TextStyle(
+                  //                   fontSize: 12,
+                  //                 ),
+                  //                 textAlign: TextAlign.center,
+                  //               )
+                  //             ]),
+                  //           ))),
+                  // )),
                   GestureDetector(
                     onTap: () {
                       isMektabaLoaded.value
@@ -589,60 +647,64 @@ class MyHomePage extends HookConsumerWidget {
                 height: 10,
               ),
 // Event
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Évènements',
-                    textAlign: TextAlign.start,
-                  ),
-                  const Divider(),
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EventDetail()),
-                        );
-                      },
-                      child: Stack(
-                        children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.grey.shade300,
-                              ),
-                              width: MediaQuery.of(context).size.width,
-                              height: 120,
-                              child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: Image.asset(
-                                      'assets/pictures/event.jpg'))),
-                          Positioned(
-                              bottom: 10,
-                              left: 20,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Samedi 19 septembre 2023 | 18h-20',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12),
-                                  ),
-                                  Text(
-                                    'Rencontre avec Sofiane Meziani',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Berlin',
-                                        fontSize: 18),
-                                  ),
-                                ],
-                              ))
-                        ],
-                      ))
-                ],
+              Visibility(
+                visible: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Évènements',
+                      textAlign: TextAlign.start,
+                    ),
+                    const Divider(),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EventDetail()),
+                          );
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.grey.shade300,
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                height: 120,
+                                child: FittedBox(
+                                    fit: BoxFit.fitHeight,
+                                    child: Image.asset(
+                                        'assets/pictures/event.jpg'))),
+                            Positioned(
+                                bottom: 10,
+                                left: 20,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Samedi 19 septembre 2023 | 18h-20',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12),
+                                    ),
+                                    Text(
+                                      'Rencontre avec Sofiane Meziani',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Berlin',
+                                          fontSize: 18),
+                                    ),
+                                  ],
+                                ))
+                          ],
+                        ))
+                  ],
+                ),
               ),
+
               const SizedBox(
                 height: 10,
               ),
@@ -720,9 +782,11 @@ class MyHomePage extends HookConsumerWidget {
                                               width: 80,
                                               height: 120,
                                               child: FittedBox(
-                                                  fit: BoxFit.fitWidth,
-                                                  child: Image.asset(
-                                                      'assets/pictures/wajiz.jpg'))),
+                                                  fit: BoxFit.fitHeight,
+                                                  child: Image.network(
+                                                      stocks[index]
+                                                          .book
+                                                          .coverPhoto))),
                                           SizedBox(
                                               width: 80,
                                               // height: 100,
